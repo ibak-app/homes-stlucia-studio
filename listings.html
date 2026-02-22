@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Properties — homes.stlucia</title>
+  <meta name="description" content="Browse all property listings in Saint Lucia. Filter by district, property type, price range, and bedrooms.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div class="super-nav" role="navigation" aria-label="stlucia.studio network"></div>
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="homes.stlucia home"><span>homes.</span>stlucia</a>
+      <div class="nav__links">
+        <a href="listings.html">Browse</a>
+        <a href="cbi.html">CBI Properties</a>
+        <a href="agent.html">Agents</a>
+      </div>
+      <a href="signup.html" class="btn btn--primary btn--sm nav__cta" data-auth="login">List Property</a>
+      <a href="dashboard.html" class="btn btn--primary btn--sm nav__cta" data-auth="user" style="display:none">Dashboard</a>
+      <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="listings.html">Browse Properties</a>
+    <a href="cbi.html">CBI Properties</a>
+    <a href="agent.html">Agents</a>
+    <a href="login.html" data-auth="login">Sign In</a>
+    <a href="dashboard.html" class="btn btn--primary" data-auth="user" style="display:none">Dashboard</a>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filters">
+    <div class="container">
+      <div class="filters__inner" id="filter-bar">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="sale">For Sale</button>
+        <button class="filter-chip" data-filter="rent">For Rent</button>
+        <button class="filter-chip" data-filter="cbi">CBI</button>
+        <select class="filter-chip" id="filter-district" aria-label="Filter by district" style="appearance:auto;padding-right:24px">
+          <option value="">All Districts</option>
+          <option value="Castries">Castries</option>
+          <option value="Gros Islet">Gros Islet</option>
+          <option value="Soufriere">Soufriere</option>
+          <option value="Vieux Fort">Vieux Fort</option>
+          <option value="Micoud">Micoud</option>
+          <option value="Dennery">Dennery</option>
+          <option value="Laborie">Laborie</option>
+          <option value="Choiseul">Choiseul</option>
+          <option value="Anse La Raye">Anse La Raye</option>
+          <option value="Canaries">Canaries</option>
+        </select>
+        <select class="filter-chip" id="filter-type" aria-label="Filter by property type" style="appearance:auto;padding-right:24px">
+          <option value="">All Types</option>
+          <option value="house">House</option>
+          <option value="villa">Villa</option>
+          <option value="apartment">Apartment</option>
+          <option value="condo">Condo</option>
+          <option value="land">Land</option>
+          <option value="commercial">Commercial</option>
+        </select>
+        <select class="filter-chip" id="filter-beds" aria-label="Filter by bedrooms" style="appearance:auto;padding-right:24px">
+          <option value="">Any Beds</option>
+          <option value="1">1+ Bed</option>
+          <option value="2">2+ Beds</option>
+          <option value="3">3+ Beds</option>
+          <option value="4">4+ Beds</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="section--sm">
+      <div class="container">
+        <div class="d-flex align-center" style="justify-content:space-between;margin-bottom:var(--spacing-lg);flex-wrap:wrap;gap:8px">
+          <h1 style="font-size:22px" id="results-heading">All Properties</h1>
+          <div class="d-flex gap-sm align-center">
+            <label for="sort-select" class="text-sm text-muted">Sort by:</label>
+            <select id="sort-select" class="filter-chip" style="appearance:auto;padding-right:24px">
+              <option value="newest">Newest</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="beds">Bedrooms</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid--3" id="listings-grid">
+          <div class="listing-card" style="opacity:0.4">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:50%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:14px;width:70%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="listing-card" style="opacity:0.4">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:50%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:14px;width:70%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="listing-card" style="opacity:0.4">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:50%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:14px;width:70%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-lg" id="load-more-wrap">
+          <button class="btn btn--ghost" id="load-more-btn">Load More</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="section--sm section--alt">
+      <div class="container">
+        <h2 class="mb-md" style="font-size:20px">Property Map</h2>
+        <div class="map-container" id="listings-map">
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted)">Map loads with listings data</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col">
+          <div class="footer__brand"><span>homes.</span>stlucia</div>
+          <p class="footer__desc">Saint Lucia's premier real estate platform. Find your dream property in paradise.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Properties</h4>
+          <a href="listings.html">Browse All</a>
+          <a href="listings.html?listing_type=sale">For Sale</a>
+          <a href="listings.html?listing_type=rent">For Rent</a>
+          <a href="cbi.html">CBI Properties</a>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <a href="agent.html">Agents</a>
+          <a href="https://talent.stlucia.studio">Careers</a>
+          <a href="https://stlucia.studio">About stlucia.studio</a>
+        </div>
+        <div class="footer__col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 homes.stlucia.studio — Part of the <a href="https://stlucia.studio">stlucia.studio</a> network</span>
+        <span>EC$2.70 = US$1.00</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/super-nav.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+  (function() {
+    /* Read URL params and pre-select filters */
+    var params = new URLSearchParams(window.location.search);
+    var listingType = params.get('listing_type');
+    var district = params.get('district');
+    var type = params.get('type');
+    var beds = params.get('beds');
+    var cbi = params.get('cbi');
+
+    if (listingType === 'sale') { activateChip('sale'); }
+    else if (listingType === 'rent') { activateChip('rent'); }
+    if (cbi === 'true') { activateChip('cbi'); }
+    if (district) { var dd = document.getElementById('filter-district'); if (dd) dd.value = district; }
+    if (type) { var td = document.getElementById('filter-type'); if (td) td.value = type; }
+    if (beds) { var bd = document.getElementById('filter-beds'); if (bd) bd.value = beds; }
+
+    function activateChip(filter) {
+      document.querySelectorAll('.filter-chip[data-filter]').forEach(function(c) { c.classList.remove('active'); });
+      var chip = document.querySelector('.filter-chip[data-filter="' + filter + '"]');
+      if (chip) chip.classList.add('active');
+    }
+
+    /* Filter chip clicks */
+    document.querySelectorAll('.filter-chip[data-filter]').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('.filter-chip[data-filter]').forEach(function(c) { c.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

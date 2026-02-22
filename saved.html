@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Properties — homes.stlucia</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    .saved-hero { background: var(--bg-alt); border-bottom: 1px solid var(--border); padding: var(--spacing-xl) 0; }
+    .saved-hero__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); flex-wrap: wrap; }
+    .saved-hero h1 { font-size: 26px; }
+    .saved-hero p { color: var(--text-muted); font-size: 15px; margin-top: 4px; }
+
+    .saved-section { padding: var(--spacing-xl) 0; min-height: 400px; }
+    .saved-empty { text-align: center; padding: var(--spacing-3xl) var(--spacing-lg); }
+    .saved-empty__icon { width: 64px; height: 64px; margin: 0 auto var(--spacing-lg); opacity: 0.25; }
+    .saved-empty h2 { font-size: 22px; margin-bottom: var(--spacing-sm); }
+    .saved-empty p { color: var(--text-muted); margin-bottom: var(--spacing-xl); max-width: 400px; margin-left: auto; margin-right: auto; }
+
+    .saved-card { background: var(--bg); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); transition: all 0.2s; position: relative; }
+    .saved-card:hover { box-shadow: var(--shadow-lg); border-color: var(--primary); transform: translateY(-2px); }
+    .saved-card__remove { position: absolute; top: var(--spacing-sm); right: var(--spacing-sm); z-index: 3; background: rgba(0,0,0,0.55); border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: background 0.2s; }
+    .saved-card__remove:hover { background: var(--error); }
+    .saved-card__img { padding-top: var(--listing-card-ratio); position: relative; background: var(--bg-alt); overflow: hidden; }
+    .saved-card__img img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .saved-card__img-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #e8f4f5, #d1ecee); }
+    .saved-card__badges { position: absolute; top: var(--spacing-sm); left: var(--spacing-sm); display: flex; gap: 4px; z-index: 2; }
+    .saved-card__body { padding: var(--spacing-md); }
+    .saved-card__price { font-size: 20px; font-weight: 900; color: var(--primary); }
+    .saved-card__price-usd { font-size: 13px; color: var(--text-muted); }
+    .saved-card__title { font-size: 15px; font-weight: 700; margin: var(--spacing-sm) 0 var(--spacing-xs); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .saved-card__location { font-size: 13px; color: var(--text-muted); margin-bottom: var(--spacing-sm); }
+    .saved-card__specs { display: flex; gap: var(--spacing-md); font-size: 13px; color: var(--text-muted); padding-top: var(--spacing-sm); border-top: 1px solid var(--border); }
+
+    .saved-count { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div class="super-nav" role="navigation" aria-label="stlucia.studio network"></div>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo" aria-label="homes.stlucia home"><span>homes.</span>stlucia</a>
+    <div class="nav__links">
+      <a href="listings.html">Browse</a>
+      <a href="cbi.html">CBI Properties</a>
+      <a href="agent.html">Agents</a>
+    </div>
+    <a href="signup.html" class="btn btn--primary btn--sm nav__cta" data-auth="login">List Property</a>
+    <a href="dashboard.html" class="btn btn--primary btn--sm nav__cta" data-auth="user" style="display:none">Dashboard</a>
+    <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="listings.html">Browse Properties</a>
+  <a href="cbi.html">CBI Properties</a>
+  <a href="agent.html">Agents</a>
+  <a href="login.html" data-auth="login">Sign In</a>
+  <a href="dashboard.html" class="btn btn--primary" data-auth="user" style="display:none">Dashboard</a>
+</div>
+
+<main id="main">
+
+  <!-- Page header -->
+  <div class="saved-hero">
+    <div class="container">
+      <div class="saved-hero__inner">
+        <div>
+          <h1>Saved Properties</h1>
+          <p id="saved-subtitle">Properties you've saved for later</p>
+        </div>
+        <a href="listings.html" class="btn btn--ghost btn--sm">Browse More</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved grid -->
+  <section class="saved-section">
+    <div class="container">
+      <div id="saved-loading" style="text-align:center;padding:var(--spacing-3xl);">
+        <p class="text-muted">Loading saved properties...</p>
+      </div>
+
+      <div class="grid grid--3" id="saved-grid" style="display:none;"></div>
+
+      <!-- Empty state -->
+      <div class="saved-empty" id="saved-empty" style="display:none;">
+        <svg class="saved-empty__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        <h2>No saved properties yet</h2>
+        <p>Browse properties and tap the heart icon to save ones you love. They'll all appear here.</p>
+        <a href="listings.html" class="btn btn--primary btn--lg">Browse Properties</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <div class="footer__brand"><span>homes.</span>stlucia</div>
+        <p class="footer__desc">Saint Lucia's premier real estate platform. Find your dream property in paradise.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Properties</h4>
+        <a href="listings.html">Browse All</a>
+        <a href="listings.html?listing_type=sale">For Sale</a>
+        <a href="listings.html?listing_type=rent">For Rent</a>
+        <a href="cbi.html">CBI Properties</a>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <a href="agent.html">Agents</a>
+        <a href="https://talent.stlucia.studio">Careers</a>
+        <a href="https://stlucia.studio">About stlucia.studio</a>
+      </div>
+      <div class="footer__col">
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 homes.stlucia.studio &mdash; Part of the <a href="https://stlucia.studio">stlucia.studio</a> network</span>
+      <span>EC$2.70 = US$1.00</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/super-nav.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  function makeSavedCard(fav, onRemove) {
+    var listing = fav.homes_listings;
+    if (!listing) return null;
+
+    var card = document.createElement('div');
+    card.className = 'saved-card';
+
+    /* Remove button */
+    var removeBtn = document.createElement('button');
+    removeBtn.className = 'saved-card__remove';
+    removeBtn.setAttribute('aria-label', 'Remove from saved');
+    var removeSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    removeSvg.setAttribute('width', '16');
+    removeSvg.setAttribute('height', '16');
+    removeSvg.setAttribute('viewBox', '0 0 24 24');
+    removeSvg.setAttribute('fill', 'none');
+    removeSvg.setAttribute('stroke', 'currentColor');
+    removeSvg.setAttribute('stroke-width', '2.5');
+    var closePath = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    closePath.setAttribute('x1', '18'); closePath.setAttribute('y1', '6'); closePath.setAttribute('x2', '6'); closePath.setAttribute('y2', '18');
+    var closePath2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    closePath2.setAttribute('x1', '6'); closePath2.setAttribute('y1', '6'); closePath2.setAttribute('x2', '18'); closePath2.setAttribute('y2', '18');
+    removeSvg.appendChild(closePath);
+    removeSvg.appendChild(closePath2);
+    removeBtn.appendChild(removeSvg);
+    removeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      onRemove(fav.id, listing.id, card);
+    });
+    card.appendChild(removeBtn);
+
+    /* Image */
+    var imgWrap = document.createElement('div');
+    imgWrap.className = 'saved-card__img';
+    if (listing.photo_urls && listing.photo_urls[0]) {
+      var img = document.createElement('img');
+      img.src = listing.photo_urls[0];
+      img.alt = listing.title || '';
+      img.loading = 'lazy';
+      imgWrap.appendChild(img);
+    } else {
+      var placeholder = document.createElement('div');
+      placeholder.className = 'saved-card__img-placeholder';
+      var houseIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      houseIcon.setAttribute('width', '40'); houseIcon.setAttribute('height', '40');
+      houseIcon.setAttribute('viewBox', '0 0 24 24'); houseIcon.setAttribute('fill', 'none');
+      houseIcon.setAttribute('stroke', 'var(--primary)'); houseIcon.setAttribute('stroke-width', '1.5');
+      var housePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      housePath.setAttribute('d', 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z');
+      houseIcon.appendChild(housePath);
+      placeholder.appendChild(houseIcon);
+      imgWrap.appendChild(placeholder);
+    }
+
+    /* Badges */
+    var badges = document.createElement('div');
+    badges.className = 'saved-card__badges';
+    if (listing.listing_type === 'sale') {
+      var b = document.createElement('span');
+      b.className = 'listing-card__badge listing-card__badge--sale';
+      b.textContent = 'For Sale';
+      badges.appendChild(b);
+    } else if (listing.listing_type === 'rent') {
+      var b2 = document.createElement('span');
+      b2.className = 'listing-card__badge listing-card__badge--rent';
+      b2.textContent = 'For Rent';
+      badges.appendChild(b2);
+    }
+    if (listing.cbi_eligible) {
+      var cbi = document.createElement('span');
+      cbi.className = 'listing-card__badge listing-card__badge--cbi';
+      cbi.textContent = 'CBI';
+      badges.appendChild(cbi);
+    }
+    imgWrap.appendChild(badges);
+    card.appendChild(imgWrap);
+
+    /* Body */
+    var body = document.createElement('div');
+    body.className = 'saved-card__body';
+
+    var priceEl = document.createElement('div');
+    priceEl.className = 'saved-card__price';
+    priceEl.textContent = listing.price_ec ? 'EC$' + Number(listing.price_ec).toLocaleString() : 'Price on request';
+    body.appendChild(priceEl);
+
+    if (listing.price_usd) {
+      var priceUsd = document.createElement('div');
+      priceUsd.className = 'saved-card__price-usd';
+      priceUsd.textContent = 'US$' + Number(listing.price_usd).toLocaleString();
+      body.appendChild(priceUsd);
+    }
+
+    var titleLink = document.createElement('a');
+    titleLink.href = 'listing.html?id=' + listing.id;
+    titleLink.className = 'saved-card__title';
+    titleLink.textContent = listing.title || 'Untitled';
+    body.appendChild(titleLink);
+
+    var loc = document.createElement('div');
+    loc.className = 'saved-card__location';
+    loc.textContent = [listing.area, listing.district].filter(Boolean).join(', ') || 'Saint Lucia';
+    body.appendChild(loc);
+
+    var specs = document.createElement('div');
+    specs.className = 'saved-card__specs';
+    if (listing.bedrooms != null) {
+      var beds = document.createElement('span');
+      beds.textContent = listing.bedrooms + ' bed';
+      specs.appendChild(beds);
+    }
+    if (listing.bathrooms != null) {
+      var baths = document.createElement('span');
+      baths.textContent = listing.bathrooms + ' bath';
+      specs.appendChild(baths);
+    }
+    if (listing.sqft) {
+      var sq = document.createElement('span');
+      sq.textContent = Number(listing.sqft).toLocaleString() + ' sqft';
+      specs.appendChild(sq);
+    }
+    body.appendChild(specs);
+    card.appendChild(body);
+
+    card.addEventListener('click', function(e) {
+      if (e.target !== removeBtn && !removeBtn.contains(e.target)) {
+        window.location.href = 'listing.html?id=' + listing.id;
+      }
+    });
+    card.style.cursor = 'pointer';
+
+    return card;
+  }
+
+  async function init() {
+    var session = await Auth.requireAuth();
+    if (!session) return;
+
+    var grid = document.getElementById('saved-grid');
+    var loading = document.getElementById('saved-loading');
+    var empty = document.getElementById('saved-empty');
+    var subtitle = document.getElementById('saved-subtitle');
+
+    var result = await Favorites.getAll(session.user.id);
+
+    if (loading) loading.style.display = 'none';
+
+    if (!result.data || result.data.length === 0) {
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+
+    if (subtitle) subtitle.textContent = result.data.length + ' saved ' + (result.data.length === 1 ? 'property' : 'properties');
+    if (grid) grid.style.display = 'grid';
+
+    result.data.forEach(function(fav) {
+      var card = makeSavedCard(fav, async function(favId, listingId, cardEl) {
+        await Favorites.remove(session.user.id, listingId);
+        cardEl.remove();
+        var remaining = document.querySelectorAll('.saved-card').length;
+        if (remaining === 0 && empty) {
+          if (grid) grid.style.display = 'none';
+          empty.style.display = 'block';
+        }
+        if (subtitle) subtitle.textContent = remaining + ' saved ' + (remaining === 1 ? 'property' : 'properties');
+        if (window.showToast) showToast('Removed from saved', 'success');
+      });
+      if (card && grid) grid.appendChild(card);
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

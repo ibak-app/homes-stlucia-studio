@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saint Lucia Real Estate — homes.stlucia</title>
+  <meta name="description" content="Find your dream property in Saint Lucia. Browse homes, villas, apartments, and CBI-approved real estate across all 10 districts.">
+  <meta property="og:title" content="Saint Lucia Real Estate — homes.stlucia">
+  <meta property="og:description" content="Browse homes, villas, and CBI-approved properties across Saint Lucia.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://homes.stlucia.studio">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div class="super-nav" role="navigation" aria-label="stlucia.studio network"></div>
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="homes.stlucia home"><span>homes.</span>stlucia</a>
+      <div class="nav__links">
+        <a href="listings.html">Browse</a>
+        <a href="cbi.html">CBI Properties</a>
+        <a href="agent.html">Agents</a>
+      </div>
+      <a href="signup.html" class="btn btn--primary btn--sm nav__cta" data-auth="login">List Property</a>
+      <a href="dashboard.html" class="btn btn--primary btn--sm nav__cta" data-auth="user" style="display:none">Dashboard</a>
+      <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="listings.html">Browse Properties</a>
+    <a href="cbi.html">CBI Properties</a>
+    <a href="agent.html">Agents</a>
+    <a href="login.html" data-auth="login">Sign In</a>
+    <a href="dashboard.html" class="btn btn--primary" data-auth="user" style="display:none">Dashboard</a>
+  </div>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <span class="hero__badge">SAINT LUCIA REAL ESTATE</span>
+        <h1>Find Your Home in Paradise</h1>
+        <p class="hero__sub">Browse properties across all 10 districts. Buy, rent, or invest through the Citizenship by Investment programme.</p>
+
+        <div class="hero-search" id="hero-search">
+          <div class="hero-search__tabs" role="tablist" aria-label="Listing type">
+            <button class="hero-search__tab hero-search__tab--active" role="tab" aria-selected="true" data-listing-type="sale" type="button">Buy</button>
+            <button class="hero-search__tab" role="tab" aria-selected="false" data-listing-type="rent" type="button">Rent</button>
+          </div>
+
+          <form class="hero-search__form" id="hero-search-form">
+            <div class="hero-search__field">
+              <label class="hero-search__label" for="search-district">District</label>
+              <select class="hero-search__select" id="search-district">
+                <option value="">All Districts</option>
+                <option value="Castries">Castries</option>
+                <option value="Gros Islet">Gros Islet</option>
+                <option value="Soufriere">Soufriere</option>
+                <option value="Vieux Fort">Vieux Fort</option>
+                <option value="Micoud">Micoud</option>
+                <option value="Dennery">Dennery</option>
+                <option value="Laborie">Laborie</option>
+                <option value="Choiseul">Choiseul</option>
+                <option value="Anse La Raye">Anse La Raye</option>
+                <option value="Canaries">Canaries</option>
+              </select>
+            </div>
+            <div class="hero-search__field">
+              <label class="hero-search__label" for="search-type">Property Type</label>
+              <select class="hero-search__select" id="search-type">
+                <option value="">All Types</option>
+                <option value="house">House</option>
+                <option value="villa">Villa</option>
+                <option value="apartment">Apartment</option>
+                <option value="condo">Condo</option>
+                <option value="land">Land</option>
+                <option value="commercial">Commercial</option>
+              </select>
+            </div>
+            <div class="hero-search__field">
+              <label class="hero-search__label" for="search-beds">Bedrooms</label>
+              <select class="hero-search__select" id="search-beds">
+                <option value="">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
+            <div class="hero-search__field">
+              <label class="hero-search__label" for="search-price" id="search-price-label">Price Range (EC$)</label>
+              <select class="hero-search__select" id="search-price">
+                <option value="">Any Price</option>
+                <option value="0-500000">Under EC$500K</option>
+                <option value="500000-1000000">EC$500K - EC$1M</option>
+                <option value="1000000-2500000">EC$1M - EC$2.5M</option>
+                <option value="2500000-5000000">EC$2.5M - EC$5M</option>
+                <option value="5000000-">EC$5M+</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn--accent">Search</button>
+          </form>
+
+          <div class="hero-search__cbi">
+            <input type="checkbox" id="search-cbi">
+            <label for="search-cbi">Show only CBI-approved properties</label>
+          </div>
+        </div>
+
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <div class="hero__stat-val" id="stat-listings">150+</div>
+            <div class="hero__stat-label">Listings</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-val" id="stat-agents">12</div>
+            <div class="hero__stat-label">Agents</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-val">10</div>
+            <div class="hero__stat-label">Districts</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED LISTINGS -->
+    <section class="section">
+      <div class="container">
+        <div class="section__header">
+          <h2>Featured Properties</h2>
+          <p>Hand-picked listings from across Saint Lucia</p>
+        </div>
+        <div class="grid grid--3" id="featured-grid">
+          <div class="listing-card" style="opacity:0.5">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:60%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:16px;width:80%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="listing-card" style="opacity:0.5">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:60%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:16px;width:80%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+          <div class="listing-card" style="opacity:0.5">
+            <div class="listing-card__img"><div style="padding-top:66.67%;background:var(--bg-alt)"></div></div>
+            <div class="listing-card__body">
+              <div style="background:var(--bg-alt);height:20px;width:60%;border-radius:4px"></div>
+              <div style="background:var(--bg-alt);height:16px;width:80%;border-radius:4px;margin-top:8px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-lg">
+          <a href="listings.html" class="btn btn--ghost">View All Properties</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CBI SECTION -->
+    <section class="section cbi-section">
+      <div class="container">
+        <div class="section__header">
+          <h2>Citizenship by Investment</h2>
+          <p style="color:rgba(255,255,255,0.8)">Invest in approved Saint Lucia real estate and qualify for citizenship. Two investment tiers available.</p>
+        </div>
+        <div class="grid grid--2">
+          <div class="cbi-card">
+            <span class="cbi-card__badge">Shared Ownership</span>
+            <div class="cbi-card__price">US$200,000+</div>
+            <p class="cbi-card__desc">Invest in an approved shared property development and qualify for Saint Lucia citizenship.</p>
+            <div class="cbi-card__features">
+              <div class="cbi-card__feature">CIU-approved developments</div>
+              <div class="cbi-card__feature">Lower entry point for families</div>
+              <div class="cbi-card__feature">Resort-style properties available</div>
+              <div class="cbi-card__feature">Hold for minimum 5 years</div>
+            </div>
+            <a href="listings.html?cbi=true&price_usd=200000-300000" class="btn btn--accent btn--full">View Shared Properties</a>
+          </div>
+          <div class="cbi-card">
+            <span class="cbi-card__badge">Sole Ownership</span>
+            <div class="cbi-card__price">US$300,000+</div>
+            <p class="cbi-card__desc">Purchase a standalone CBI-approved property for sole ownership and full residency rights.</p>
+            <div class="cbi-card__features">
+              <div class="cbi-card__feature">Full property ownership</div>
+              <div class="cbi-card__feature">Villas, homes, and luxury estates</div>
+              <div class="cbi-card__feature">Rental income potential</div>
+              <div class="cbi-card__feature">Hold for minimum 5 years</div>
+            </div>
+            <a href="listings.html?cbi=true&price_usd=300000-" class="btn btn--accent btn--full">View Sole Properties</a>
+          </div>
+        </div>
+        <div class="text-center mt-lg">
+          <a href="cbi.html" class="btn btn--ghost-light">Learn More About CBI</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEIGHBOURHOODS -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section__header">
+          <h2>Explore Neighbourhoods</h2>
+          <p>Discover Saint Lucia's most sought-after districts</p>
+        </div>
+        <div class="grid grid--4">
+          <div class="hood-card">
+            <div class="hood-card__img"><h3>Rodney Bay</h3></div>
+            <div class="hood-card__body">
+              <p>The tourism hub. Restaurants, nightlife, marina, and beaches — the most popular area for expats and investors.</p>
+              <div class="hood-card__stats"><span class="hood-card__stat"><strong>Gros Islet</strong> district</span></div>
+            </div>
+          </div>
+          <div class="hood-card">
+            <div class="hood-card__img"><h3>Cap Estate</h3></div>
+            <div class="hood-card__body">
+              <p>Luxury gated communities, golf course, and stunning ocean views. Home to the island's most prestigious properties.</p>
+              <div class="hood-card__stats"><span class="hood-card__stat"><strong>Gros Islet</strong> district</span></div>
+            </div>
+          </div>
+          <div class="hood-card">
+            <div class="hood-card__img"><h3>Marigot Bay</h3></div>
+            <div class="hood-card__body">
+              <p>One of the Caribbean's most beautiful bays. Boutique resorts, marina living, and lush hillside homes.</p>
+              <div class="hood-card__stats"><span class="hood-card__stat"><strong>Castries</strong> district</span></div>
+            </div>
+          </div>
+          <div class="hood-card">
+            <div class="hood-card__img"><h3>Soufriere</h3></div>
+            <div class="hood-card__body">
+              <p>The Pitons, volcanic springs, and chocolate plantations. Eco-luxury living at its finest.</p>
+              <div class="hood-card__stats"><span class="hood-card__stat"><strong>Soufriere</strong> district</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <div class="container">
+        <div class="section__header">
+          <h2>How It Works</h2>
+          <p>Finding your Saint Lucia property is simple</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <h3>Search</h3>
+            <p>Browse listings by district, property type, price, and bedrooms. Filter for CBI-approved properties.</p>
+          </div>
+          <div class="step">
+            <h3>Connect</h3>
+            <p>Contact verified local agents directly. Schedule viewings and get expert guidance on Saint Lucia real estate.</p>
+          </div>
+          <div class="step">
+            <h3>Move In</h3>
+            <p>Complete your purchase with local legal support. We guide you through the Alien Landholding Licence process.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MORTGAGE CALCULATOR -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section__header">
+          <h2>Mortgage Calculator</h2>
+          <p>Estimate your monthly payments with local bank rates</p>
+        </div>
+        <div class="calc" style="max-width:600px;margin:0 auto">
+          <div class="grid grid--2">
+            <div class="form-group">
+              <label class="form-label" for="calc-price">Property Price (EC$)</label>
+              <input class="form-input" type="number" id="calc-price" value="1000000" min="0" step="10000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="calc-down">Down Payment (%)</label>
+              <input class="form-input" type="number" id="calc-down" value="20" min="0" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="calc-rate">Interest Rate (%)</label>
+              <input class="form-input" type="number" id="calc-rate" value="7" min="0" max="30" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="calc-term">Term (Years)</label>
+              <input class="form-input" type="number" id="calc-term" value="25" min="1" max="40">
+            </div>
+          </div>
+          <button class="btn btn--primary btn--full mt-md" type="button" onclick="calculateMortgage()">Calculate</button>
+          <div class="calc__result" id="calc-result" style="display:none">
+            <div class="calc__monthly">EC$0/mo</div>
+            <div class="calc__monthly-usd">~US$0/mo</div>
+            <div class="calc__breakdown">
+              <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Down Payment</div></div>
+              <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Loan Amount</div></div>
+              <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Total Interest</div></div>
+              <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Total Paid</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <section class="section section--dark">
+      <div class="container">
+        <div class="stats-bar">
+          <div class="stats-bar__item">
+            <div class="stats-bar__val">10</div>
+            <div class="stats-bar__label">Districts</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__val">EC$2.70</div>
+            <div class="stats-bar__label">= US$1.00</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__val">US$200K+</div>
+            <div class="stats-bar__label">CBI Entry</div>
+          </div>
+          <div class="stats-bar__item">
+            <div class="stats-bar__val">172,948</div>
+            <div class="stats-bar__label">Population</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMAIL SIGNUP -->
+    <section class="section">
+      <div class="container">
+        <div class="section__header">
+          <h2>Get Property Alerts</h2>
+          <p>Be the first to know when new listings match your criteria</p>
+        </div>
+        <form style="max-width:480px;margin:0 auto;display:flex;gap:8px" id="email-alert-form">
+          <label for="alert-email" class="sr-only">Email address</label>
+          <input class="form-input" type="email" id="alert-email" placeholder="your@email.com" required style="flex:1">
+          <button type="submit" class="btn btn--primary">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col">
+          <div class="footer__brand"><span>homes.</span>stlucia</div>
+          <p class="footer__desc">Saint Lucia's premier real estate platform. Find your dream property in paradise.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Properties</h4>
+          <a href="listings.html">Browse All</a>
+          <a href="listings.html?listing_type=sale">For Sale</a>
+          <a href="listings.html?listing_type=rent">For Rent</a>
+          <a href="cbi.html">CBI Properties</a>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <a href="agent.html">Agents</a>
+          <a href="https://talent.stlucia.studio">Careers</a>
+          <a href="https://stlucia.studio">About stlucia.studio</a>
+        </div>
+        <div class="footer__col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 homes.stlucia.studio — Part of the <a href="https://stlucia.studio">stlucia.studio</a> network</span>
+        <span>EC$2.70 = US$1.00</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/super-nav.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

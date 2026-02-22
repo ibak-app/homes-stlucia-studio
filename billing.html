@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing &amp; Plans — homes.stlucia</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    .dash__sidebar-logout { padding: var(--spacing-md) var(--spacing-lg); border-top: 1px solid rgba(255,255,255,0.1); }
+    .dash__sidebar-logout a { display: flex; align-items: center; gap: var(--spacing-sm); font-size: 14px; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+    .dash__sidebar-logout a:hover { color: var(--error); }
+    .dash__topbar-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; color: var(--text); }
+    @media (max-width: 768px) { .dash__topbar-toggle { display: flex; align-items: center; } }
+    .dash__overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 49; }
+    .dash__overlay.open { display: block; }
+
+    .current-plan { background: var(--bg-alt); border: 2px solid var(--primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); margin-bottom: var(--spacing-xl); }
+    .current-plan__header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+    .current-plan__name { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .current-plan__meta { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+    .current-plan__usage { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-md); }
+    .usage-item { background: var(--bg); border-radius: var(--radius-lg); padding: var(--spacing-md); text-align: center; border: 1px solid var(--border); }
+    .usage-item__val { font-size: 22px; font-weight: 900; color: var(--text); }
+    .usage-item__label { font-size: 12px; color: var(--text-muted); }
+
+    .plans-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-xl); }
+    @media (min-width: 640px) { .plans-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .history-section h2 { font-size: 18px; margin-bottom: var(--spacing-lg); }
+    .history-table__wrap { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .history-table th { text-align: left; padding: var(--spacing-sm) var(--spacing-md); border-bottom: 2px solid var(--border); color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+    .history-table td { padding: var(--spacing-sm) var(--spacing-md); border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .history-table tr:last-child td { border-bottom: none; }
+    .history-empty { text-align: center; padding: var(--spacing-2xl) var(--spacing-lg); color: var(--text-muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="dash">
+  <div class="dash__overlay" id="dash-overlay"></div>
+
+  <aside class="dash__sidebar" id="dash-sidebar" aria-label="Dashboard navigation">
+    <div class="dash__sidebar-brand">
+      <a href="index.html" style="color:inherit;text-decoration:none;"><span>homes.</span>stlucia</a>
+    </div>
+    <nav class="dash__sidebar-nav" role="navigation">
+      <a class="dash__sidebar-item" href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        My Listings
+      </a>
+      <a class="dash__sidebar-item" href="saved.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Saved
+      </a>
+      <a class="dash__sidebar-item active" href="billing.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Billing
+      </a>
+      <a class="dash__sidebar-item" href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="dash__sidebar-logout">
+      <a href="#" id="logout-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sign Out
+      </a>
+    </div>
+  </aside>
+
+  <main class="dash__main" id="main">
+    <div class="dash__topbar">
+      <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+        <button class="dash__topbar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 style="font-size:20px;font-weight:700;">Billing &amp; Plans</h1>
+      </div>
+      <span class="text-sm text-muted" id="user-greeting">Welcome back</span>
+    </div>
+
+    <div class="dash__content">
+
+      <!-- Current Plan -->
+      <div class="current-plan">
+        <div class="current-plan__header">
+          <div>
+            <div class="current-plan__name" id="current-plan-name">Basic Plan</div>
+            <div class="current-plan__meta" id="current-plan-meta">Free — no credit card required</div>
+          </div>
+          <span class="badge badge--live">Active</span>
+        </div>
+        <div class="current-plan__usage">
+          <div class="usage-item">
+            <div class="usage-item__val" id="usage-listings">—</div>
+            <div class="usage-item__label">Listings Used</div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-item__val" id="usage-limit">1</div>
+            <div class="usage-item__label">Listing Limit</div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-item__val" id="usage-views">—</div>
+            <div class="usage-item__label">Total Views</div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-item__val" id="usage-inquiries">—</div>
+            <div class="usage-item__label">Inquiries</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing Plans -->
+      <h2 style="font-size:18px;margin-bottom:var(--spacing-lg);">Choose a Plan</h2>
+      <div class="plans-grid">
+
+        <div class="pricing-card">
+          <div class="pricing-card__name">Basic</div>
+          <div class="pricing-card__price"><span class="currency">EC$</span>0<span class="period">/mo</span></div>
+          <div class="pricing-card__usd">Free forever</div>
+          <div class="pricing-card__features">
+            <div class="pricing-card__feature">1 active listing</div>
+            <div class="pricing-card__feature">Standard placement in search</div>
+            <div class="pricing-card__feature">Buyer inquiries via contact form</div>
+            <div class="pricing-card__feature">Basic listing analytics</div>
+          </div>
+          <button class="btn btn--ghost pricing-card__cta" disabled>Current Plan</button>
+        </div>
+
+        <div class="pricing-card pricing-card--featured">
+          <div class="pricing-card__name">Pro</div>
+          <div class="pricing-card__price"><span class="currency">EC$</span>300<span class="period">/mo</span></div>
+          <div class="pricing-card__usd">~US$111/mo</div>
+          <div class="pricing-card__features">
+            <div class="pricing-card__feature">Up to 10 active listings</div>
+            <div class="pricing-card__feature">Featured placement in search</div>
+            <div class="pricing-card__feature">Full analytics dashboard</div>
+            <div class="pricing-card__feature">Buyer inquiry management</div>
+            <div class="pricing-card__feature">Priority email support</div>
+          </div>
+          <button class="btn btn--primary pricing-card__cta" data-plan="pro">Upgrade to Pro</button>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-card__name">Premium</div>
+          <div class="pricing-card__price"><span class="currency">EC$</span>800<span class="period">/mo</span></div>
+          <div class="pricing-card__usd">~US$296/mo</div>
+          <div class="pricing-card__features">
+            <div class="pricing-card__feature">Unlimited active listings</div>
+            <div class="pricing-card__feature">Priority featured placement</div>
+            <div class="pricing-card__feature">CBI property badge</div>
+            <div class="pricing-card__feature">Advanced analytics &amp; reports</div>
+            <div class="pricing-card__feature">Dedicated account manager</div>
+            <div class="pricing-card__feature">API access for bulk uploads</div>
+          </div>
+          <button class="btn btn--accent pricing-card__cta" data-plan="premium">Upgrade to Premium</button>
+        </div>
+
+      </div>
+
+      <!-- Payment History -->
+      <div class="history-section">
+        <h2>Payment History</h2>
+        <div class="history-table__wrap">
+          <div id="history-content">
+            <div class="history-empty">No payment history yet.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/super-nav.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var dashSidebar = document.getElementById('dash-sidebar');
+  var dashOverlay = document.getElementById('dash-overlay');
+
+  if (sidebarToggle && dashSidebar && dashOverlay) {
+    sidebarToggle.addEventListener('click', function() {
+      var open = dashSidebar.classList.toggle('open');
+      dashOverlay.classList.toggle('open', open);
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    dashOverlay.addEventListener('click', function() {
+      dashSidebar.classList.remove('open');
+      dashOverlay.classList.remove('open');
+      sidebarToggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  var logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      await Auth.signOut();
+      window.location.href = 'index.html';
+    });
+  }
+
+  document.querySelectorAll('[data-plan]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var plan = this.dataset.plan;
+      if (window.showToast) showToast('Redirecting to checkout for ' + plan + ' plan...', 'success');
+      /* Stripe checkout: window.location.href = '/api/checkout?plan=' + plan; */
+    });
+  });
+
+  function buildHistoryTable(payments) {
+    var table = document.createElement('table');
+    table.className = 'history-table';
+    var thead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+    ['Date', 'Description', 'Amount', 'Status'].forEach(function(col) {
+      var th = document.createElement('th');
+      th.textContent = col;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    payments.forEach(function(payment) {
+      var tr = document.createElement('tr');
+
+      var dateCell = document.createElement('td');
+      dateCell.textContent = new Date(payment.created_at).toLocaleDateString('en-LC', { year: 'numeric', month: 'short', day: 'numeric' });
+
+      var descCell = document.createElement('td');
+      descCell.textContent = payment.description || 'Subscription';
+
+      var amtCell = document.createElement('td');
+      var amt = typeof payment.amount === 'number' ? (payment.amount / 100).toFixed(2) : '—';
+      amtCell.textContent = payment.currency === 'USD' ? 'US$' + amt : 'EC$' + amt;
+
+      var statusCell = document.createElement('td');
+      var badge = document.createElement('span');
+      badge.className = payment.status === 'succeeded' ? 'badge badge--live' : 'badge badge--pending';
+      badge.textContent = payment.status || 'pending';
+      statusCell.appendChild(badge);
+
+      tr.appendChild(dateCell);
+      tr.appendChild(descCell);
+      tr.appendChild(amtCell);
+      tr.appendChild(statusCell);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    return table;
+  }
+
+  async function init() {
+    var session = await Auth.requireAuth();
+    if (!session) return;
+    var user = session.user;
+
+    var greeting = document.getElementById('user-greeting');
+    if (greeting && user.user_metadata && user.user_metadata.first_name) {
+      greeting.textContent = 'Hi, ' + user.user_metadata.first_name;
+    }
+
+    var result = await Listings.getByAgent(user.id);
+    if (result.data) {
+      document.getElementById('usage-listings').textContent = result.data.length;
+    }
+
+    var historyContent = document.getElementById('history-content');
+    try {
+      var payments = await db.from('payments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (payments.data && payments.data.length > 0) {
+        historyContent.textContent = '';
+        historyContent.appendChild(buildHistoryTable(payments.data));
+      }
+    } catch (e) { /* payments table not yet created */ }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

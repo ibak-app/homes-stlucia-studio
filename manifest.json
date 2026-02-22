@@ -1,0 +1,16 @@
+{
+  "name": "Homes by St. Lucia Studio",
+  "short_name": "Homes SLU",
+  "description": "Find your perfect property in Saint Lucia — listings, CBI investments, and agent services.",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0D7377",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait-primary",
+  "categories": ["business", "lifestyle"],
+  "lang": "en",
+  "icons": [
+    { "src": "assets/icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

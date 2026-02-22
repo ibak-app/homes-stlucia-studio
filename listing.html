@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Details — homes.stlucia</title>
+  <meta name="description" content="View property details, photos, specs, and agent contact information.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+  <style>
+    .gallery { display: grid; grid-template-columns: 2fr 1fr; gap: 4px; border-radius: var(--radius-lg); overflow: hidden; max-height: 460px; }
+    .gallery__main { position: relative; }
+    .gallery__main img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery__side { display: grid; grid-template-rows: 1fr 1fr; gap: 4px; }
+    .gallery__side img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery__more { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; padding: 6px 14px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
+    @media (max-width: 640px) { .gallery { grid-template-columns: 1fr; max-height: 280px; } .gallery__side { display: none; } }
+    .detail-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-xl); }
+    @media (min-width: 768px) { .detail-grid { grid-template-columns: 2fr 1fr; } }
+    .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin: var(--spacing-lg) 0; }
+    .spec-item { text-align: center; padding: var(--spacing-md); background: var(--bg-alt); border-radius: var(--radius-md); }
+    .spec-item__val { font-size: 22px; font-weight: 900; color: var(--primary); }
+    .spec-item__label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div class="super-nav" role="navigation" aria-label="stlucia.studio network"></div>
+
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" aria-label="homes.stlucia home"><span>homes.</span>stlucia</a>
+      <div class="nav__links">
+        <a href="listings.html">Browse</a>
+        <a href="cbi.html">CBI Properties</a>
+        <a href="agent.html">Agents</a>
+      </div>
+      <a href="signup.html" class="btn btn--primary btn--sm nav__cta" data-auth="login">List Property</a>
+      <a href="dashboard.html" class="btn btn--primary btn--sm nav__cta" data-auth="user" style="display:none">Dashboard</a>
+      <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="listings.html">Browse Properties</a>
+    <a href="cbi.html">CBI Properties</a>
+    <a href="agent.html">Agents</a>
+    <a href="login.html" data-auth="login">Sign In</a>
+    <a href="dashboard.html" class="btn btn--primary" data-auth="user" style="display:none">Dashboard</a>
+  </div>
+
+  <main id="main">
+    <section class="section--sm">
+      <div class="container">
+        <a href="listings.html" class="text-sm text-muted mb-md" style="display:inline-block">&larr; Back to listings</a>
+
+        <!-- Photo Gallery -->
+        <div class="gallery mb-lg" id="listing-gallery">
+          <div class="gallery__main">
+            <div style="padding-top:66.67%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center">
+              <span class="text-muted">Loading photos...</span>
+            </div>
+          </div>
+          <div class="gallery__side">
+            <div style="background:var(--bg-alt)"></div>
+            <div style="background:var(--bg-alt)"></div>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <!-- Main Content -->
+          <div>
+            <div class="d-flex align-center gap-sm mb-sm" id="listing-badges"></div>
+            <h1 style="font-size:26px" id="listing-title">Loading property details...</h1>
+            <p class="text-muted mb-md" id="listing-location"></p>
+
+            <div class="d-flex align-center gap-md mb-md">
+              <div>
+                <div style="font-size:28px;font-weight:900;color:var(--primary)" id="listing-price"></div>
+                <div class="text-sm text-muted" id="listing-price-usd"></div>
+              </div>
+            </div>
+
+            <!-- Specs -->
+            <div class="spec-grid" id="listing-specs">
+              <div class="spec-item">
+                <div class="spec-item__val" id="spec-beds">-</div>
+                <div class="spec-item__label">Bedrooms</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-item__val" id="spec-baths">-</div>
+                <div class="spec-item__label">Bathrooms</div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-item__val" id="spec-sqft">-</div>
+                <div class="spec-item__label">Sq Ft</div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <h2 style="font-size:18px" class="mb-sm">About This Property</h2>
+            <div id="listing-description" class="text-muted mb-lg" style="line-height:1.8">
+              Property description loading...
+            </div>
+
+            <!-- Features -->
+            <h2 style="font-size:18px" class="mb-sm">Features</h2>
+            <div id="listing-features" class="mb-lg" style="columns:2;gap:var(--spacing-lg)"></div>
+
+            <!-- Map -->
+            <h2 style="font-size:18px" class="mb-sm">Location</h2>
+            <div class="map-container mb-lg" id="listing-map">
+              <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted)">Map</div>
+            </div>
+
+            <!-- Mortgage Calculator -->
+            <h2 style="font-size:18px" class="mb-sm">Mortgage Estimate</h2>
+            <div class="calc">
+              <div class="grid grid--2">
+                <div class="form-group">
+                  <label class="form-label" for="calc-price">Property Price (EC$)</label>
+                  <input class="form-input" type="number" id="calc-price" value="0" min="0" step="10000">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="calc-down">Down Payment (%)</label>
+                  <input class="form-input" type="number" id="calc-down" value="20" min="0" max="100">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="calc-rate">Interest Rate (%)</label>
+                  <input class="form-input" type="number" id="calc-rate" value="7" min="0" max="30" step="0.1">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="calc-term">Term (Years)</label>
+                  <input class="form-input" type="number" id="calc-term" value="25" min="1" max="40">
+                </div>
+              </div>
+              <button class="btn btn--primary btn--full mt-md" type="button" onclick="calculateMortgage()">Calculate</button>
+              <div class="calc__result" id="calc-result" style="display:none">
+                <div class="calc__monthly">EC$0/mo</div>
+                <div class="calc__monthly-usd">~US$0/mo</div>
+                <div class="calc__breakdown">
+                  <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Down Payment</div></div>
+                  <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Loan Amount</div></div>
+                  <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Total Interest</div></div>
+                  <div class="calc__item"><div class="calc__item-val">EC$0</div><div class="calc__item-label">Total Paid</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar: Agent Card -->
+          <aside>
+            <div class="agent-card" id="listing-agent" style="position:sticky;top:80px">
+              <div class="agent-card__avatar" id="agent-avatar">A</div>
+              <div class="agent-card__name" id="agent-name">Loading agent...</div>
+              <div class="agent-card__agency" id="agent-agency"></div>
+              <div class="agent-card__listings" id="agent-listing-count"></div>
+              <div style="margin-top:var(--spacing-lg)">
+                <a href="#" class="btn btn--primary btn--full mb-sm" id="agent-phone-btn">Call Agent</a>
+                <a href="#" class="btn btn--ghost btn--full" id="agent-email-btn">Email Agent</a>
+              </div>
+            </div>
+
+            <div style="margin-top:var(--spacing-lg);padding:var(--spacing-md);background:var(--bg-alt);border-radius:var(--radius-lg)">
+              <h3 style="font-size:15px;margin-bottom:var(--spacing-sm)">Enquire About This Property</h3>
+              <form id="enquiry-form">
+                <div class="form-group">
+                  <label class="form-label" for="enquiry-name">Your Name</label>
+                  <input class="form-input" type="text" id="enquiry-name" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="enquiry-email">Email</label>
+                  <input class="form-input" type="email" id="enquiry-email" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="enquiry-phone">Phone</label>
+                  <input class="form-input" type="tel" id="enquiry-phone">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="enquiry-message">Message</label>
+                  <textarea class="form-textarea" id="enquiry-message" rows="3">I'm interested in this property. Please send me more information.</textarea>
+                </div>
+                <button type="submit" class="btn btn--accent btn--full">Send Enquiry</button>
+              </form>
+            </div>
+          </aside>
+        </div>
+
+        <!-- Similar Listings -->
+        <section class="mt-lg" style="padding-top:var(--spacing-xl);border-top:1px solid var(--border)">
+          <h2 style="font-size:20px" class="mb-md">Similar Properties</h2>
+          <div class="grid grid--3" id="similar-grid"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col">
+          <div class="footer__brand"><span>homes.</span>stlucia</div>
+          <p class="footer__desc">Saint Lucia's premier real estate platform. Find your dream property in paradise.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Properties</h4>
+          <a href="listings.html">Browse All</a>
+          <a href="listings.html?listing_type=sale">For Sale</a>
+          <a href="listings.html?listing_type=rent">For Rent</a>
+          <a href="cbi.html">CBI Properties</a>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <a href="agent.html">Agents</a>
+          <a href="https://talent.stlucia.studio">Careers</a>
+          <a href="https://stlucia.studio">About stlucia.studio</a>
+        </div>
+        <div class="footer__col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; 2026 homes.stlucia.studio — Part of the <a href="https://stlucia.studio">stlucia.studio</a> network</span>
+        <span>EC$2.70 = US$1.00</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/supabase.js"></script>
+  <script src="assets/js/super-nav.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Agent — homes.stlucia</title>
+  <meta name="description" content="Browse Saint Lucia real estate agents and view their property listings on homes.stlucia.studio.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    /* Agent profile header */
+    .agent-profile { background: linear-gradient(135deg, #0B1622 0%, var(--primary-dark) 100%); color: #fff; padding: var(--spacing-3xl) 0; }
+    .agent-profile__inner { display: flex; align-items: flex-start; gap: var(--spacing-xl); flex-wrap: wrap; }
+    .agent-profile__avatar { width: 96px; height: 96px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 900; color: #fff; flex-shrink: 0; border: 3px solid rgba(255,255,255,0.3); overflow: hidden; }
+    .agent-profile__avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .agent-profile__info { flex: 1; min-width: 0; }
+    .agent-profile__name { font-size: clamp(22px, 3vw, 32px); font-weight: 800; margin-bottom: 4px; }
+    .agent-profile__agency { font-size: 16px; color: rgba(255,255,255,0.75); margin-bottom: var(--spacing-md); }
+    .agent-profile__bio { font-size: 15px; color: rgba(255,255,255,0.8); max-width: 600px; line-height: 1.7; margin-bottom: var(--spacing-lg); }
+    .agent-profile__stats { display: flex; gap: var(--spacing-xl); flex-wrap: wrap; }
+    .agent-profile__stat { text-align: center; }
+    .agent-profile__stat-val { font-size: 22px; font-weight: 900; }
+    .agent-profile__stat-label { font-size: 12px; color: rgba(255,255,255,0.65); }
+    .agent-profile__contacts { display: flex; gap: var(--spacing-md); flex-wrap: wrap; margin-top: var(--spacing-lg); }
+    .agent-profile__contact { display: flex; align-items: center; gap: 6px; font-size: 14px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); padding: 8px 14px; border-radius: var(--radius-pill); transition: background 0.2s; }
+    .agent-profile__contact:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .agent-profile__contact svg { flex-shrink: 0; }
+
+    /* Listings section */
+    .agent-listings { padding: var(--spacing-2xl) 0; }
+    .agent-listings__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-xl); }
+    .agent-listings__header h2 { font-size: 24px; }
+    .agent-listings-empty { text-align: center; padding: var(--spacing-3xl) var(--spacing-lg); color: var(--text-muted); }
+
+    /* Contact section */
+    .agent-contact { padding: var(--spacing-2xl) 0; background: var(--bg-alt); border-top: 1px solid var(--border); }
+    .agent-contact__inner { display: grid; grid-template-columns: 1fr; gap: var(--spacing-xl); }
+    @media (min-width: 768px) { .agent-contact__inner { grid-template-columns: 1fr 1fr; align-items: start; } }
+    .agent-contact__info h2 { font-size: 24px; margin-bottom: var(--spacing-md); }
+    .agent-contact__info p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin-bottom: var(--spacing-lg); }
+    .contact-detail { display: flex; align-items: center; gap: var(--spacing-sm); font-size: 14px; color: var(--text-muted); margin-bottom: var(--spacing-sm); }
+    .contact-detail svg { flex-shrink: 0; color: var(--primary); }
+    .contact-form-card { background: var(--bg); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); }
+    .contact-form-card h3 { font-size: 18px; margin-bottom: var(--spacing-lg); }
+    .form-success { text-align: center; padding: var(--spacing-xl); display: none; }
+    .form-success svg { color: var(--success); margin: 0 auto var(--spacing-md); display: block; }
+    .form-success h3 { margin-bottom: var(--spacing-sm); }
+    .form-success p { color: var(--text-muted); font-size: 14px; }
+
+    /* Agents directory (when no id param) */
+    .agents-dir { padding: var(--spacing-2xl) 0; }
+    .agents-dir__header { margin-bottom: var(--spacing-xl); }
+    .agents-dir__header h1 { font-size: clamp(24px, 3vw, 36px); margin-bottom: var(--spacing-sm); }
+    .agents-dir__header p { color: var(--text-muted); font-size: 16px; }
+    .agents-dir-empty { text-align: center; padding: var(--spacing-3xl) var(--spacing-lg); color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div class="super-nav" role="navigation" aria-label="stlucia.studio network"></div>
+
+<nav class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo" aria-label="homes.stlucia home"><span>homes.</span>stlucia</a>
+    <div class="nav__links">
+      <a href="listings.html">Browse</a>
+      <a href="cbi.html">CBI Properties</a>
+      <a href="agent.html" style="color:var(--primary);font-weight:700;">Agents</a>
+    </div>
+    <a href="signup.html" class="btn btn--primary btn--sm nav__cta" data-auth="login">List Property</a>
+    <a href="dashboard.html" class="btn btn--primary btn--sm nav__cta" data-auth="user" style="display:none">Dashboard</a>
+    <button class="nav__toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="listings.html">Browse Properties</a>
+  <a href="cbi.html">CBI Properties</a>
+  <a href="agent.html">Agents</a>
+  <a href="login.html" data-auth="login">Sign In</a>
+  <a href="dashboard.html" class="btn btn--primary" data-auth="user" style="display:none">Dashboard</a>
+</div>
+
+<main id="main">
+
+  <!-- Agent Profile view (shown when ?id= is present) -->
+  <div id="view-profile" style="display:none;">
+
+    <div class="agent-profile" id="agent-header">
+      <div class="container">
+        <div class="agent-profile__inner">
+          <div class="agent-profile__avatar" id="agent-avatar">?</div>
+          <div class="agent-profile__info">
+            <div class="agent-profile__name" id="agent-name">Loading...</div>
+            <div class="agent-profile__agency" id="agent-agency"></div>
+            <div class="agent-profile__bio" id="agent-bio"></div>
+            <div class="agent-profile__stats">
+              <div class="agent-profile__stat">
+                <div class="agent-profile__stat-val" id="agent-listing-count">—</div>
+                <div class="agent-profile__stat-label">Listings</div>
+              </div>
+              <div class="agent-profile__stat">
+                <div class="agent-profile__stat-val" id="agent-district">—</div>
+                <div class="agent-profile__stat-label">Primary District</div>
+              </div>
+            </div>
+            <div class="agent-profile__contacts" id="agent-contacts"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="agent-listings">
+      <div class="container">
+        <div class="agent-listings__header">
+          <h2 id="listings-heading">Listings</h2>
+          <a href="listings.html" class="btn btn--ghost btn--sm">View All Properties</a>
+        </div>
+        <div class="grid grid--3" id="agent-listings-grid">
+          <p class="text-muted">Loading listings...</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="agent-contact" id="contact-section">
+      <div class="container">
+        <div class="agent-contact__inner">
+          <div class="agent-contact__info">
+            <h2>Get in Touch</h2>
+            <p>Interested in a property or want to know more about the Saint Lucia real estate market? Send a message and the agent will get back to you promptly.</p>
+            <div class="contact-detail" id="contact-phone-row" style="display:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.1 1.14 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+              <span id="contact-phone"></span>
+            </div>
+            <div class="contact-detail" id="contact-email-row" style="display:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span id="contact-email"></span>
+            </div>
+            <div class="contact-detail">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="contact-district">Saint Lucia</span>
+            </div>
+          </div>
+          <div class="contact-form-card">
+            <h3>Send a Message</h3>
+            <form id="contact-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="cf-name">Your Name</label>
+                <input class="form-input" id="cf-name" type="text" required autocomplete="name" placeholder="Jane Smith">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-email">Email Address</label>
+                <input class="form-input" id="cf-email" type="email" required autocomplete="email" placeholder="jane@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-phone">Phone (optional)</label>
+                <input class="form-input" id="cf-phone" type="tel" autocomplete="tel" placeholder="+1 758 000 0000">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-message">Message</label>
+                <textarea class="form-textarea" id="cf-message" rows="4" required placeholder="I'm interested in one of your listings..."></textarea>
+              </div>
+              <div class="form-error" id="cf-error" style="display:none;" role="alert"></div>
+              <button type="submit" class="btn btn--primary btn--full" id="cf-submit">Send Message</button>
+            </form>
+            <div class="form-success" id="form-success">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <h3>Message Sent</h3>
+              <p>The agent will get back to you soon. Check your email for a confirmation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Agents Directory view (shown when no ?id= param) -->
+  <div id="view-directory">
+    <section class="agents-dir">
+      <div class="container">
+        <div class="agents-dir__header">
+          <h1>Real Estate Agents</h1>
+          <p>Connect with experienced agents across all districts of Saint Lucia.</p>
+        </div>
+        <div class="grid grid--3" id="agents-directory-grid">
+          <p class="text-muted">Loading agents...</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <div class="footer__brand"><span>homes.</span>stlucia</div>
+        <p class="footer__desc">Saint Lucia's premier real estate platform. Find your dream property in paradise.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Properties</h4>
+        <a href="listings.html">Browse All</a>
+        <a href="listings.html?listing_type=sale">For Sale</a>
+        <a href="listings.html?listing_type=rent">For Rent</a>
+        <a href="cbi.html">CBI Properties</a>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <a href="agent.html">Agents</a>
+        <a href="https://talent.stlucia.studio">Careers</a>
+        <a href="https://stlucia.studio">About stlucia.studio</a>
+      </div>
+      <div class="footer__col">
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; 2026 homes.stlucia.studio &mdash; Part of the <a href="https://stlucia.studio">stlucia.studio</a> network</span>
+      <span>EC$2.70 = US$1.00</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/super-nav.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var params = new URLSearchParams(window.location.search);
+  var agentId = params.get('id');
+
+  function makeAgentDirectoryCard(agent) {
+    var card = document.createElement('a');
+    card.href = 'agent.html?id=' + agent.id;
+    card.className = 'agent-card';
+    card.style.display = 'block';
+    card.style.textDecoration = 'none';
+
+    var avatar = document.createElement('div');
+    avatar.className = 'agent-card__avatar';
+    if (agent.logo_url) {
+      var img = document.createElement('img');
+      img.src = agent.logo_url;
+      img.alt = agent.company_name || 'Agent';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+      avatar.appendChild(img);
+    } else {
+      avatar.textContent = (agent.contact_name || agent.company_name || '?').charAt(0).toUpperCase();
+    }
+
+    var name = document.createElement('div');
+    name.className = 'agent-card__name';
+    name.textContent = agent.contact_name || agent.company_name || 'Agent';
+
+    var agency = document.createElement('div');
+    agency.className = 'agent-card__agency';
+    agency.textContent = agent.company_name || '';
+
+    var listingCount = document.createElement('div');
+    listingCount.className = 'agent-card__listings';
+    listingCount.textContent = (agent.listing_count || '—') + ' listings';
+
+    card.appendChild(avatar);
+    card.appendChild(name);
+    card.appendChild(agency);
+    card.appendChild(listingCount);
+    return card;
+  }
+
+  function addContactLink(container, href, iconPath, label) {
+    var link = document.createElement('a');
+    link.href = href;
+    link.className = 'agent-profile__contact';
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '14'); svg.setAttribute('height', '14');
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', iconPath);
+    svg.appendChild(path);
+    link.appendChild(svg);
+    var text = document.createElement('span');
+    text.textContent = label;
+    link.appendChild(text);
+    container.appendChild(link);
+  }
+
+  async function loadProfile(id) {
+    var profileView = document.getElementById('view-profile');
+    var dirView = document.getElementById('view-directory');
+    profileView.style.display = 'block';
+    dirView.style.display = 'none';
+
+    var result = await Agents.getById(id);
+    if (!result.data) {
+      document.getElementById('agent-name').textContent = 'Agent not found';
+      return;
+    }
+    var agent = result.data;
+
+    /* Update page title */
+    document.title = (agent.contact_name || agent.company_name || 'Agent') + ' — homes.stlucia';
+
+    /* Avatar */
+    var avatarEl = document.getElementById('agent-avatar');
+    if (agent.logo_url) {
+      var img = document.createElement('img');
+      img.src = agent.logo_url;
+      img.alt = agent.contact_name || agent.company_name || '';
+      avatarEl.textContent = '';
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.textContent = (agent.contact_name || agent.company_name || '?').charAt(0).toUpperCase();
+    }
+
+    /* Name / agency / bio */
+    document.getElementById('agent-name').textContent = agent.contact_name || agent.company_name || 'Agent';
+    document.getElementById('agent-agency').textContent = agent.company_name || '';
+    document.getElementById('agent-bio').textContent = agent.bio || '';
+    document.getElementById('agent-district').textContent = agent.district || 'Saint Lucia';
+
+    /* Stats */
+    if (agent.district) document.getElementById('agent-district').textContent = agent.district;
+
+    /* Contact links */
+    var contacts = document.getElementById('agent-contacts');
+    if (agent.phone) {
+      addContactLink(contacts, 'tel:' + agent.phone.replace(/\s/g, ''), 'M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.1 1.14 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z', agent.phone);
+      var phoneRow = document.getElementById('contact-phone-row');
+      if (phoneRow) { phoneRow.style.display = 'flex'; document.getElementById('contact-phone').textContent = agent.phone; }
+    }
+    if (agent.email) {
+      addContactLink(contacts, 'mailto:' + agent.email, 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z', agent.email);
+      var emailRow = document.getElementById('contact-email-row');
+      if (emailRow) { emailRow.style.display = 'flex'; document.getElementById('contact-email').textContent = agent.email; }
+    }
+
+    /* Listings */
+    var listingsGrid = document.getElementById('agent-listings-grid');
+    var listingsResult = await Listings.getByAgent(id);
+    listingsGrid.textContent = '';
+    if (!listingsResult.data || listingsResult.data.length === 0) {
+      var empty = document.createElement('p');
+      empty.className = 'text-muted agent-listings-empty';
+      empty.textContent = 'No active listings at this time.';
+      listingsGrid.appendChild(empty);
+      document.getElementById('agent-listing-count').textContent = '0';
+      document.getElementById('listings-heading').textContent = 'Listings (0)';
+    } else {
+      document.getElementById('agent-listing-count').textContent = listingsResult.data.length;
+      document.getElementById('listings-heading').textContent = 'Listings (' + listingsResult.data.length + ')';
+      listingsResult.data.forEach(function(listing) {
+        listingsGrid.appendChild(renderListingCard(listing));
+      });
+    }
+
+    /* Contact form */
+    var form = document.getElementById('contact-form');
+    if (form) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var name = document.getElementById('cf-name').value.trim();
+        var email = document.getElementById('cf-email').value.trim();
+        var message = document.getElementById('cf-message').value.trim();
+        var errorEl = document.getElementById('cf-error');
+
+        if (!name || !email || !message) {
+          errorEl.textContent = 'Please fill in all required fields.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        errorEl.style.display = 'none';
+
+        var submitBtn = document.getElementById('cf-submit');
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+
+        var inquiry = {
+          agent_id: id,
+          name: name,
+          email: email,
+          phone: document.getElementById('cf-phone').value.trim() || null,
+          message: message
+        };
+
+        var result2 = await Inquiries.create(inquiry);
+        submitBtn.textContent = 'Send Message';
+        submitBtn.disabled = false;
+
+        if (result2.error) {
+          errorEl.textContent = 'Something went wrong. Please try again.';
+          errorEl.style.display = 'block';
+        } else {
+          form.style.display = 'none';
+          var success = document.getElementById('form-success');
+          if (success) success.style.display = 'block';
+          if (window.showToast) showToast('Message sent successfully', 'success');
+        }
+      });
+    }
+  }
+
+  async function loadDirectory() {
+    var profileView = document.getElementById('view-profile');
+    var dirView = document.getElementById('view-directory');
+    profileView.style.display = 'none';
+    dirView.style.display = 'block';
+
+    document.title = 'Real Estate Agents — homes.stlucia';
+
+    var grid = document.getElementById('agents-directory-grid');
+    var result = await Agents.getAll();
+    grid.textContent = '';
+
+    if (!result.data || result.data.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'agents-dir-empty';
+      var p = document.createElement('p');
+      p.textContent = 'No agents listed yet. Check back soon.';
+      empty.appendChild(p);
+      grid.appendChild(empty);
+      return;
+    }
+
+    result.data.forEach(function(agent) {
+      grid.appendChild(makeAgentDirectoryCard(agent));
+    });
+  }
+
+  if (agentId) {
+    loadProfile(agentId);
+  } else {
+    loadDirectory();
+  }
+
+})();
+</script>
+</body>
+</html>

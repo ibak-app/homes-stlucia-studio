@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — homes.stlucia</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer data-domain="homes.stlucia.studio" src="https://plausible.io/js/script.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GXK2QMVPZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0GXK2QMVPZ');</script>
+  <!-- Analytics: Facebook Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1403025764621663');fbq('track','PageView');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    .dash__sidebar-logout { padding: var(--spacing-md) var(--spacing-lg); border-top: 1px solid rgba(255,255,255,0.1); }
+    .dash__sidebar-logout a { display: flex; align-items: center; gap: var(--spacing-sm); font-size: 14px; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+    .dash__sidebar-logout a:hover { color: var(--error); }
+    .dash__panel { display: none; }
+    .dash__panel.active { display: block; }
+    .dash__topbar-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; color: var(--text); }
+    @media (max-width: 768px) { .dash__topbar-toggle { display: flex; align-items: center; } }
+    .dash__overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 49; }
+    .dash__overlay.open { display: block; }
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-xl); }
+    .stat-card { background: var(--bg-alt); border-radius: var(--radius-lg); padding: var(--spacing-lg); border: 1px solid var(--border); }
+    .stat-card__val { font-size: 28px; font-weight: 900; color: var(--primary); }
+    .stat-card__label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg); }
+    .listings-empty { text-align: center; padding: var(--spacing-3xl) var(--spacing-lg); color: var(--text-muted); }
+    .listings-empty p { margin-bottom: var(--spacing-lg); }
+    .listing-row { display: flex; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); background: var(--bg); }
+    .listing-row__thumb { width: 64px; height: 48px; border-radius: var(--radius-md); background: var(--bg-alt); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 20px; }
+    .listing-row__thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .listing-row__info { flex: 1; min-width: 0; }
+    .listing-row__title { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .listing-row__meta { font-size: 12px; color: var(--text-muted); }
+    .listing-row__actions { display: flex; gap: var(--spacing-sm); flex-shrink: 0; }
+    .btn--xs { font-size: 12px; padding: 6px 12px; }
+    .inquiry-row { padding: var(--spacing-md); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); background: var(--bg); }
+    .inquiry-row__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .inquiry-row__name { font-weight: 700; font-size: 14px; }
+    .inquiry-row__date { font-size: 12px; color: var(--text-muted); }
+    .inquiry-row__listing { font-size: 13px; color: var(--primary); margin-bottom: 4px; }
+    .inquiry-row__msg { font-size: 13px; color: var(--text-muted); }
+    .alert-row { display: flex; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: var(--spacing-sm); background: var(--bg); }
+    .alert-row__info { flex: 1; }
+    .alert-row__title { font-weight: 600; font-size: 14px; }
+    .alert-row__desc { font-size: 12px; color: var(--text-muted); }
+    .settings-section { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+    .settings-section h3 { margin-bottom: var(--spacing-md); font-size: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="dash">
+  <div class="dash__overlay" id="dash-overlay"></div>
+
+  <aside class="dash__sidebar" id="dash-sidebar" aria-label="Dashboard navigation">
+    <div class="dash__sidebar-brand">
+      <a href="index.html" style="color:inherit;text-decoration:none;"><span>homes.</span>stlucia</a>
+    </div>
+    <nav class="dash__sidebar-nav" role="navigation">
+      <a class="dash__sidebar-item active" data-panel="listings" href="#listings" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        My Listings
+      </a>
+      <a class="dash__sidebar-item" data-panel="saved" href="#saved" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Saved
+      </a>
+      <a class="dash__sidebar-item" data-panel="alerts" href="#alerts" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        Alerts
+      </a>
+      <a class="dash__sidebar-item" data-panel="messages" href="#messages" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Messages
+      </a>
+      <a class="dash__sidebar-item" data-panel="settings" href="#settings" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="dash__sidebar-logout">
+      <a href="#" id="logout-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sign Out
+      </a>
+    </div>
+  </aside>
+
+  <main class="dash__main" id="main">
+    <div class="dash__topbar">
+      <div style="display:flex;align-items:center;gap:var(--spacing-md);">
+        <button class="dash__topbar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 style="font-size:20px;font-weight:700;" id="panel-title">My Listings</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--spacing-sm);">
+        <span class="text-sm text-muted" id="user-greeting">Welcome back</span>
+        <a href="billing.html" class="btn btn--ghost btn--sm">Upgrade</a>
+      </div>
+    </div>
+
+    <div class="dash__content">
+
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card__val" id="stat-views">—</div>
+          <div class="stat-card__label">Total Views</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__val" id="stat-inquiries">—</div>
+          <div class="stat-card__label">Inquiries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__val" id="stat-saved-count">—</div>
+          <div class="stat-card__label">Saved by Buyers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__val" id="stat-listings-count">—</div>
+          <div class="stat-card__label">Active Listings</div>
+        </div>
+      </div>
+
+      <!-- Panel: My Listings -->
+      <div class="dash__panel active" id="panel-listings">
+        <div class="panel-header">
+          <h2 style="font-size:18px;">My Listings</h2>
+          <a href="listing-edit.html" class="btn btn--primary btn--sm">+ Add Listing</a>
+        </div>
+        <div id="my-listings-grid">
+          <p class="text-muted">Loading your listings...</p>
+        </div>
+      </div>
+
+      <!-- Panel: Saved -->
+      <div class="dash__panel" id="panel-saved">
+        <div class="panel-header">
+          <h2 style="font-size:18px;">Saved Properties</h2>
+          <a href="listings.html" class="btn btn--ghost btn--sm">Browse More</a>
+        </div>
+        <div id="saved-listings-grid">
+          <div class="listings-empty">
+            <p class="text-muted">You haven't saved any properties yet.</p>
+            <a href="listings.html" class="btn btn--primary">Browse Properties</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Alerts -->
+      <div class="dash__panel" id="panel-alerts">
+        <div class="panel-header">
+          <h2 style="font-size:18px;">Property Alerts</h2>
+        </div>
+        <p class="text-muted mb-lg" style="font-size:14px;">Get notified when new properties match your criteria.</p>
+        <div id="alerts-list">
+          <div class="listings-empty">
+            <p class="text-muted">No alerts set up yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Messages -->
+      <div class="dash__panel" id="panel-messages">
+        <div class="panel-header">
+          <h2 style="font-size:18px;">Messages</h2>
+        </div>
+        <div id="messages-list">
+          <div class="listings-empty">
+            <p class="text-muted">No messages yet. Inquiries from buyers will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Settings -->
+      <div class="dash__panel" id="panel-settings">
+        <div class="panel-header">
+          <h2 style="font-size:18px;">Account Settings</h2>
+        </div>
+        <div class="settings-section">
+          <h3>Profile Information</h3>
+          <form id="settings-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="s-first-name">First Name</label>
+                <input class="form-input" id="s-first-name" type="text" autocomplete="given-name">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="s-last-name">Last Name</label>
+                <input class="form-input" id="s-last-name" type="text" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="s-email">Email Address</label>
+              <input class="form-input" id="s-email" type="email" autocomplete="email" readonly style="opacity:0.6;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="s-phone">Phone</label>
+              <input class="form-input" id="s-phone" type="tel" autocomplete="tel" placeholder="+1 758 000 0000">
+            </div>
+            <button type="submit" class="btn btn--primary">Save Changes</button>
+          </form>
+        </div>
+        <div class="settings-section">
+          <h3>Password</h3>
+          <form id="password-form">
+            <div class="form-group">
+              <label class="form-label" for="s-new-password">New Password</label>
+              <input class="form-input" id="s-new-password" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+            </div>
+            <button type="submit" class="btn btn--ghost">Update Password</button>
+          </form>
+        </div>
+        <div class="settings-section">
+          <h3>Plan &amp; Billing</h3>
+          <p class="text-muted mb-md" style="font-size:14px;">Manage your subscription and payment details.</p>
+          <a href="billing.html" class="btn btn--primary">Manage Billing</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/super-nav.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var panelTitles = { listings: 'My Listings', saved: 'Saved Properties', alerts: 'Property Alerts', messages: 'Messages', settings: 'Account Settings' };
+
+  function showPanel(panelId) {
+    document.querySelectorAll('.dash__panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.dash__sidebar-item[data-panel]').forEach(function(i) { i.classList.remove('active'); });
+    var panel = document.getElementById('panel-' + panelId);
+    if (panel) panel.classList.add('active');
+    var item = document.querySelector('[data-panel="' + panelId + '"]');
+    if (item) item.classList.add('active');
+    var title = document.getElementById('panel-title');
+    if (title) title.textContent = panelTitles[panelId] || panelId;
+  }
+
+  document.querySelectorAll('.dash__sidebar-item[data-panel]').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      showPanel(this.dataset.panel);
+      closeSidebar();
+    });
+  });
+
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var dashSidebar = document.getElementById('dash-sidebar');
+  var dashOverlay = document.getElementById('dash-overlay');
+
+  function closeSidebar() {
+    if (!dashSidebar) return;
+    dashSidebar.classList.remove('open');
+    if (dashOverlay) dashOverlay.classList.remove('open');
+    if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  if (sidebarToggle && dashSidebar && dashOverlay) {
+    sidebarToggle.addEventListener('click', function() {
+      var open = dashSidebar.classList.toggle('open');
+      dashOverlay.classList.toggle('open', open);
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    dashOverlay.addEventListener('click', closeSidebar);
+  }
+
+  function makeListingRow(id, title, district, priceEc, photoUrl, editLink) {
+    var row = document.createElement('div');
+    row.className = 'listing-row';
+
+    var thumb = document.createElement('div');
+    thumb.className = 'listing-row__thumb';
+    if (photoUrl) {
+      var img = document.createElement('img');
+      img.src = photoUrl;
+      img.alt = '';
+      thumb.appendChild(img);
+    } else {
+      thumb.textContent = String.fromCodePoint(127968);
+    }
+    row.appendChild(thumb);
+
+    var info = document.createElement('div');
+    info.className = 'listing-row__info';
+    var titleEl = document.createElement('div');
+    titleEl.className = 'listing-row__title';
+    titleEl.textContent = title || 'Untitled';
+    var metaEl = document.createElement('div');
+    metaEl.className = 'listing-row__meta';
+    metaEl.textContent = (district || '') + (priceEc ? ' \u2022 EC$' + Number(priceEc).toLocaleString() : '');
+    info.appendChild(titleEl);
+    info.appendChild(metaEl);
+    row.appendChild(info);
+
+    var actions = document.createElement('div');
+    actions.className = 'listing-row__actions';
+    var viewLink = document.createElement('a');
+    viewLink.href = 'listing.html?id=' + id;
+    viewLink.className = 'btn btn--ghost btn--sm btn--xs';
+    viewLink.textContent = 'View';
+    actions.appendChild(viewLink);
+    if (editLink) {
+      var editEl = document.createElement('a');
+      editEl.href = editLink;
+      editEl.className = 'btn btn--primary btn--sm btn--xs';
+      editEl.textContent = 'Edit';
+      actions.appendChild(editEl);
+    }
+    row.appendChild(actions);
+    return row;
+  }
+
+  async function loadListings(userId) {
+    var grid = document.getElementById('my-listings-grid');
+    if (!grid) return;
+    var result = await Listings.getByAgent(userId);
+    grid.textContent = '';
+    if (!result.data || result.data.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'listings-empty';
+      var p = document.createElement('p');
+      p.className = 'text-muted';
+      p.textContent = 'You have no listings yet.';
+      var link = document.createElement('a');
+      link.href = 'listing-edit.html';
+      link.className = 'btn btn--primary';
+      link.textContent = 'Add Your First Listing';
+      empty.appendChild(p);
+      empty.appendChild(link);
+      grid.appendChild(empty);
+      document.getElementById('stat-listings-count').textContent = '0';
+      return;
+    }
+    document.getElementById('stat-listings-count').textContent = result.data.length;
+    result.data.forEach(function(listing) {
+      var photo = (listing.photo_urls && listing.photo_urls[0]) || '';
+      grid.appendChild(makeListingRow(listing.id, listing.title, listing.district, listing.price_ec, photo, 'listing-edit.html?id=' + listing.id));
+    });
+  }
+
+  async function loadSaved(userId) {
+    var grid = document.getElementById('saved-listings-grid');
+    if (!grid) return;
+    var result = await Favorites.getAll(userId);
+    if (!result.data || result.data.length === 0) {
+      document.getElementById('stat-saved-count').textContent = '0';
+      return;
+    }
+    document.getElementById('stat-saved-count').textContent = result.data.length;
+    grid.textContent = '';
+    result.data.forEach(function(fav) {
+      var listing = fav.homes_listings;
+      if (!listing) return;
+      var photo = (listing.photo_urls && listing.photo_urls[0]) || '';
+      grid.appendChild(makeListingRow(listing.id, listing.title, listing.district, listing.price_ec, photo, null));
+    });
+  }
+
+  async function loadAlerts(userId) {
+    var list = document.getElementById('alerts-list');
+    if (!list) return;
+    var result = await Alerts.getForUser(userId);
+    if (!result.data || result.data.length === 0) return;
+    list.textContent = '';
+    result.data.forEach(function(alert) {
+      var row = document.createElement('div');
+      row.className = 'alert-row';
+
+      var info = document.createElement('div');
+      info.className = 'alert-row__info';
+      var titleEl = document.createElement('div');
+      titleEl.className = 'alert-row__title';
+      titleEl.textContent = (alert.district || 'Any District') + ' \u2022 ' + (alert.property_type || 'Any Type');
+      var descEl = document.createElement('div');
+      descEl.className = 'alert-row__desc';
+      descEl.textContent = 'Max EC$' + (alert.max_price ? Number(alert.max_price).toLocaleString() : 'Any');
+      info.appendChild(titleEl);
+      info.appendChild(descEl);
+
+      var btn = document.createElement('button');
+      btn.className = 'btn btn--ghost btn--sm';
+      btn.textContent = 'Remove';
+      btn.addEventListener('click', async function() {
+        await Alerts.remove(alert.id);
+        row.remove();
+        if (window.showToast) showToast('Alert removed', 'success');
+      });
+
+      row.appendChild(info);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  }
+
+  async function loadMessages(userId) {
+    var list = document.getElementById('messages-list');
+    if (!list) return;
+    var result = await Inquiries.getForAgent(userId);
+    if (!result.data || result.data.length === 0) {
+      document.getElementById('stat-inquiries').textContent = '0';
+      return;
+    }
+    document.getElementById('stat-inquiries').textContent = result.data.length;
+    list.textContent = '';
+    result.data.forEach(function(inq) {
+      var row = document.createElement('div');
+      row.className = 'inquiry-row';
+
+      var header = document.createElement('div');
+      header.className = 'inquiry-row__header';
+      var nameEl = document.createElement('span');
+      nameEl.className = 'inquiry-row__name';
+      nameEl.textContent = inq.name || 'Anonymous';
+      var dateEl = document.createElement('span');
+      dateEl.className = 'inquiry-row__date';
+      dateEl.textContent = new Date(inq.created_at).toLocaleDateString('en-LC', { month: 'short', day: 'numeric' });
+      header.appendChild(nameEl);
+      header.appendChild(dateEl);
+      row.appendChild(header);
+
+      if (inq.homes_listings) {
+        var listingRef = document.createElement('div');
+        listingRef.className = 'inquiry-row__listing';
+        listingRef.textContent = inq.homes_listings.title;
+        row.appendChild(listingRef);
+      }
+
+      var msgEl = document.createElement('div');
+      msgEl.className = 'inquiry-row__msg';
+      msgEl.textContent = inq.message || '';
+      row.appendChild(msgEl);
+      list.appendChild(row);
+    });
+  }
+
+  async function init() {
+    var session = await Auth.requireAuth();
+    if (!session) return;
+    var user = session.user;
+
+    var greeting = document.getElementById('user-greeting');
+    if (greeting && user.user_metadata && user.user_metadata.first_name) {
+      greeting.textContent = 'Hi, ' + user.user_metadata.first_name;
+    }
+
+    var emailEl = document.getElementById('s-email');
+    if (emailEl) emailEl.value = user.email || '';
+    if (user.user_metadata) {
+      var fn = document.getElementById('s-first-name');
+      var ln = document.getElementById('s-last-name');
+      if (fn) fn.value = user.user_metadata.first_name || '';
+      if (ln) ln.value = user.user_metadata.last_name || '';
+    }
+
+    document.getElementById('stat-views').textContent = '—';
+
+    loadListings(user.id);
+    loadSaved(user.id);
+    loadAlerts(user.id);
+    loadMessages(user.id);
+  }
+
+  var logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      await Auth.signOut();
+      window.location.href = 'index.html';
+    });
+  }
+
+  var settingsForm = document.getElementById('settings-form');
+  if (settingsForm) {
+    settingsForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = this.querySelector('button[type="submit"]');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      var result = await db.auth.updateUser({
+        data: {
+          first_name: document.getElementById('s-first-name').value,
+          last_name: document.getElementById('s-last-name').value
+        }
+      });
+      btn.textContent = 'Save Changes';
+      btn.disabled = false;
+      if (result.error) {
+        if (window.showToast) showToast('Error: ' + result.error.message, 'error');
+      } else {
+        if (window.showToast) showToast('Settings saved', 'success');
+      }
+    });
+  }
+
+  var passwordForm = document.getElementById('password-form');
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var pwd = document.getElementById('s-new-password').value;
+      if (pwd.length < 8) {
+        if (window.showToast) showToast('Password must be at least 8 characters', 'error');
+        return;
+      }
+      var btn = this.querySelector('button[type="submit"]');
+      btn.textContent = 'Updating...';
+      btn.disabled = true;
+      var result = await db.auth.updateUser({ password: pwd });
+      btn.textContent = 'Update Password';
+      btn.disabled = false;
+      if (result.error) {
+        if (window.showToast) showToast('Error: ' + result.error.message, 'error');
+      } else {
+        if (window.showToast) showToast('Password updated', 'success');
+        document.getElementById('s-new-password').value = '';
+      }
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
