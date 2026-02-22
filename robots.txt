@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /listings.html
+Allow: /listing.html
+Allow: /cbi.html
+Allow: /agent.html
+Allow: /privacy.html
+Allow: /terms.html
+
+Disallow: /dashboard.html
+Disallow: /saved.html
+Disallow: /billing.html
+Disallow: /login.html
+Disallow: /signup.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+Disallow: /offline.html
+Disallow: /404.html
+
+Sitemap: https://homes.stlucia.studio/sitemap.xml
