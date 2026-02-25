@@ -22,7 +22,8 @@
     { label: 'Retire',   href: 'https://retire.stlucia.studio',   host: 'retire.stlucia.studio'   },
     { label: 'Talent',   href: 'https://talent.stlucia.studio',   host: 'talent.stlucia.studio'   },
     { label: 'Hire',     href: 'https://hire.stlucia.studio',     host: 'hire.stlucia.studio'     },
-    { label: 'Homes',    href: 'https://homes.stlucia.studio',    host: 'homes.stlucia.studio'    }
+    { label: 'Homes',    href: 'https://homes.stlucia.studio',    host: 'homes.stlucia.studio'    },
+    { label: 'Services', href: 'https://services.stlucia.studio', host: 'services.stlucia.studio' }
   ];
 
   // 2. Detect active property --------------------------------------------------
@@ -45,6 +46,7 @@
       if (path.indexOf('remote') !== -1)       return 'remote.stlucia.studio';
       if (path.indexOf('visit') !== -1)        return 'visit.stlucia.studio';
       if (path.indexOf('retire') !== -1)       return 'retire.stlucia.studio';
+      if (path.indexOf('services') !== -1)    return 'services.stlucia.studio';
     }
     // Hub (stlucia.studio) or unknown: no active link
     return null;
@@ -52,16 +54,16 @@
 
   var activeHost = getActiveHost();
 
-  // 3. Inject CSS --------------------------------------------------------------
+  // 3. Inject CSS (matches talent style.css — WCAG 2.1 AA approved) -----------
   var CSS = [
-    '.super-nav{background:#0a0f1a;color:#8892a8;font-size:12px;line-height:1;position:relative;z-index:1000;}',
-    '.super-nav__inner{max-width:1200px;margin:0 auto;padding:6px 16px;display:flex;align-items:center;gap:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
+    '.super-nav{background:#1A202C;height:36px;display:flex;align-items:center;overflow:hidden;position:relative;z-index:1000;}',
+    '.super-nav__inner{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:12px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
     '.super-nav__inner::-webkit-scrollbar{display:none;}',
-    '.super-nav__label{color:#fff;font-weight:700;font-size:11px;white-space:nowrap;letter-spacing:0.03em;flex-shrink:0;}',
-    '.super-nav__links{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;}',
-    '.super-nav__link{color:#8892a8;text-decoration:none;padding:2px 8px;border-radius:4px;white-space:nowrap;font-size:12px;transition:color 0.2s,background 0.2s;}',
-    '.super-nav__link:hover{color:#fff;}',
-    '.super-nav__link--active{color:#fff;background:rgba(255,255,255,0.1);}'
+    '.super-nav__label{font-size:11px;color:rgba(255,255,255,0.7);white-space:nowrap;letter-spacing:0.03em;flex-shrink:0;}',
+    '.super-nav__links{display:flex;gap:4px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}',
+    '.super-nav__link{font-size:11px;font-weight:500;color:rgba(255,255,255,0.75);text-decoration:none;padding:3px 8px;border-radius:4px;white-space:nowrap;transition:all 0.2s;}',
+    '.super-nav__link:hover{color:#fff;background:rgba(255,255,255,0.1);}',
+    '.super-nav__link--active{color:#fff;background:#0D7377;font-weight:700;}'
   ].join('');
 
   var styleEl = document.createElement('style');
@@ -87,8 +89,8 @@
     label.textContent = 'stlucia.studio';
     inner.appendChild(label);
 
-    // Links container
-    var linksNav = document.createElement('nav');
+    // Links container (div, not nav — avoids nested navigation landmarks)
+    var linksNav = document.createElement('div');
     linksNav.className = 'super-nav__links';
 
     for (var i = 0; i < PROPERTIES.length; i++) {
@@ -142,4 +144,24 @@
   } else {
     inject();
   }
+
+  // 6. Cross-property visitor cookie -------------------------------------------
+  // Sets a persistent visitor_id on .stlucia.studio for cross-site attribution.
+  (function () {
+    var COOKIE_NAME = 'sl_visitor';
+    var existing = document.cookie.split('; ').find(function (c) {
+      return c.startsWith(COOKIE_NAME + '=');
+    });
+    if (existing) return;
+
+    // Generate a simple UUID v4
+    var id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0;
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+
+    var domain = '.stlucia.studio';
+    var expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = COOKIE_NAME + '=' + id + ';domain=' + domain + ';path=/;expires=' + expires + ';SameSite=Lax;Secure';
+  })();
 })();
