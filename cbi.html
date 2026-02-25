@@ -293,5 +293,68 @@
   <script src="assets/js/supabase.js"></script>
   <script src="assets/js/super-nav.js"></script>
   <script src="assets/js/app.js"></script>
+  <script>
+  (async function() {
+    var grid = document.getElementById('cbi-grid');
+    var result = await Listings.getCBI(6);
+    var listings = result.data || [];
+
+    grid.textContent = '';
+
+    if (listings.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'text-center text-muted';
+      empty.style.cssText = 'grid-column:1/-1;padding:40px';
+      empty.textContent = 'No CBI properties listed yet. Check back soon.';
+      grid.appendChild(empty);
+      return;
+    }
+
+    listings.forEach(function(l) {
+      var photo = (l.photo_urls && l.photo_urls[0]) || 'assets/images/placeholder.jpg';
+      var card = document.createElement('a');
+      card.href = 'listing.html?id=' + l.id;
+      card.className = 'listing-card';
+
+      var imgWrap = document.createElement('div');
+      imgWrap.className = 'listing-card__img';
+      var img = document.createElement('img');
+      img.src = photo;
+      img.alt = l.title || 'CBI Property';
+      img.loading = 'lazy';
+      imgWrap.appendChild(img);
+
+      var body = document.createElement('div');
+      body.className = 'listing-card__body';
+
+      var price = document.createElement('div');
+      price.className = 'listing-card__price';
+      price.textContent = l.price_usd ? formatUSD(l.price_usd) : formatEC(l.price_ec);
+      body.appendChild(price);
+
+      var title = document.createElement('div');
+      title.className = 'listing-card__title';
+      title.textContent = l.title || 'Untitled';
+      body.appendChild(title);
+
+      var meta = document.createElement('div');
+      meta.className = 'listing-card__meta';
+      meta.textContent = (l.district || '') + (l.area ? ', ' + l.area : '');
+      body.appendChild(meta);
+
+      var badge = document.createElement('span');
+      badge.className = 'badge badge--accent';
+      badge.style.marginTop = '6px';
+      badge.textContent = 'CBI Eligible';
+      body.appendChild(badge);
+
+      card.appendChild(imgWrap);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+
+    Track.event('cbi_page_view', { listings_shown: listings.length });
+  })();
+  </script>
 </body>
 </html>

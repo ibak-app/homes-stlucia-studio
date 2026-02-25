@@ -9,7 +9,7 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
-    storageKey: 'homes-stlucia-auth',
+    /* storageKey removed — share default key with talent + hire for SSO */
     storage: window.localStorage,
     autoRefreshToken: true,
     detectSessionInUrl: true
@@ -334,3 +334,20 @@ function formatUSD(amount) {
 function ecToUsd(ec) {
   return Math.round(ec / 2.70);
 }
+
+/* ========================================
+   EXPORTS (available globally)
+   ======================================== */
+window.db = db;
+window.Auth = Auth;
+window.Listings = Listings;
+window.Agents = Agents;
+window.Inquiries = Inquiries;
+window.Favorites = Favorites;
+window.Alerts = Alerts;
+window.Track = Track;
+window.Photos = Photos;
+window.escapeHtml = escapeHtml;
+window.formatEC = formatEC;
+window.formatUSD = formatUSD;
+window.ecToUsd = ecToUsd;

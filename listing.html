@@ -236,5 +236,229 @@
   <script src="assets/js/supabase.js"></script>
   <script src="assets/js/super-nav.js"></script>
   <script src="assets/js/app.js"></script>
+  <script>
+  (async function() {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    if (!id) { document.getElementById('listing-title').textContent = 'Property not found'; return; }
+
+    var result = await Listings.getById(id);
+    if (result.error || !result.data) {
+      document.getElementById('listing-title').textContent = 'Property not found';
+      return;
+    }
+    var l = result.data;
+
+    /* Title + Meta */
+    document.title = (l.title || 'Property') + ' — homes.stlucia';
+    document.getElementById('listing-title').textContent = l.title || 'Untitled';
+    document.getElementById('listing-location').textContent = (l.district || '') + (l.area ? ', ' + l.area : '') + ', Saint Lucia';
+    document.getElementById('listing-price').textContent = formatEC(l.price_ec);
+    document.getElementById('listing-price-usd').textContent = l.price_usd ? formatUSD(l.price_usd) : (l.price_ec ? '~' + formatUSD(ecToUsd(l.price_ec)) : '');
+
+    /* Badges */
+    var badgesEl = document.getElementById('listing-badges');
+    if (l.listing_type) {
+      var b1 = document.createElement('span');
+      b1.className = 'badge badge--primary';
+      b1.textContent = l.listing_type === 'sale' ? 'For Sale' : 'For Rent';
+      badgesEl.appendChild(b1);
+    }
+    if (l.property_type) {
+      var b2 = document.createElement('span');
+      b2.className = 'badge';
+      b2.textContent = l.property_type.charAt(0).toUpperCase() + l.property_type.slice(1);
+      badgesEl.appendChild(b2);
+    }
+    if (l.cbi_eligible) {
+      var b3 = document.createElement('span');
+      b3.className = 'badge badge--accent';
+      b3.textContent = 'CBI Eligible';
+      badgesEl.appendChild(b3);
+    }
+
+    /* Specs */
+    document.getElementById('spec-beds').textContent = l.bedrooms || '-';
+    document.getElementById('spec-baths').textContent = l.bathrooms || '-';
+    document.getElementById('spec-sqft').textContent = l.sqft ? Number(l.sqft).toLocaleString() : '-';
+
+    /* Description */
+    document.getElementById('listing-description').textContent = l.description || 'No description available.';
+
+    /* Features */
+    var featEl = document.getElementById('listing-features');
+    if (l.features && l.features.length > 0) {
+      l.features.forEach(function(f) {
+        var item = document.createElement('div');
+        item.style.cssText = 'padding:4px 0;font-size:14px';
+        item.textContent = '\u2713 ' + f;
+        featEl.appendChild(item);
+      });
+    } else {
+      featEl.textContent = 'No features listed.';
+    }
+
+    /* Photo Gallery */
+    var gallery = document.getElementById('listing-gallery');
+    var photos = l.photo_urls || [];
+    if (photos.length > 0) {
+      gallery.textContent = '';
+      var mainDiv = document.createElement('div');
+      mainDiv.className = 'gallery__main';
+      var mainImg = document.createElement('img');
+      mainImg.src = photos[0];
+      mainImg.alt = l.title || 'Property photo';
+      mainDiv.appendChild(mainImg);
+      if (photos.length > 3) {
+        var moreBtn = document.createElement('button');
+        moreBtn.className = 'gallery__more';
+        moreBtn.textContent = '+' + (photos.length - 3) + ' photos';
+        mainDiv.appendChild(moreBtn);
+      }
+      gallery.appendChild(mainDiv);
+
+      if (photos.length > 1) {
+        var sideDiv = document.createElement('div');
+        sideDiv.className = 'gallery__side';
+        for (var i = 1; i < Math.min(3, photos.length); i++) {
+          var sideImg = document.createElement('img');
+          sideImg.src = photos[i];
+          sideImg.alt = 'Photo ' + (i + 1);
+          sideDiv.appendChild(sideImg);
+        }
+        gallery.appendChild(sideDiv);
+      }
+    }
+
+    /* Mortgage calculator pre-fill */
+    if (l.price_ec) document.getElementById('calc-price').value = l.price_ec;
+
+    /* Agent Card */
+    var agent = l.homes_agents;
+    if (agent) {
+      document.getElementById('agent-name').textContent = agent.contact_name || agent.company_name || 'Agent';
+      document.getElementById('agent-agency').textContent = agent.company_name || '';
+      if (agent.logo_url) {
+        var avEl = document.getElementById('agent-avatar');
+        avEl.textContent = '';
+        var avImg = document.createElement('img');
+        avImg.src = agent.logo_url;
+        avImg.alt = agent.company_name || 'Agent';
+        avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+        avEl.appendChild(avImg);
+      }
+      if (agent.phone) {
+        document.getElementById('agent-phone-btn').href = 'tel:' + agent.phone;
+        document.getElementById('agent-phone-btn').textContent = 'Call ' + agent.phone;
+      }
+      if (agent.email) {
+        document.getElementById('agent-email-btn').href = 'mailto:' + agent.email + '?subject=' + encodeURIComponent('Enquiry: ' + (l.title || 'Property'));
+      }
+      if (agent.district) {
+        document.getElementById('agent-listing-count').textContent = agent.district;
+      }
+    }
+
+    /* Enquiry Form */
+    document.getElementById('enquiry-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = this.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      var inquiry = {
+        listing_id: l.id,
+        agent_id: agent ? agent.id : null,
+        name: document.getElementById('enquiry-name').value,
+        email: document.getElementById('enquiry-email').value,
+        phone: document.getElementById('enquiry-phone').value || null,
+        message: document.getElementById('enquiry-message').value,
+        source: 'listing_detail'
+      };
+
+      var res = await Inquiries.create(inquiry);
+      if (res.error) {
+        btn.textContent = 'Error — Try Again';
+        btn.disabled = false;
+      } else {
+        btn.textContent = 'Enquiry Sent!';
+        btn.style.background = 'var(--success)';
+      }
+    });
+
+    /* Similar Listings */
+    var similarResult = await Listings.getAll({ district: l.district, limit: 3 });
+    var similar = (similarResult.data || []).filter(function(s) { return s.id !== l.id; }).slice(0, 3);
+    var simGrid = document.getElementById('similar-grid');
+    if (similar.length === 0) {
+      simGrid.parentElement.style.display = 'none';
+    } else {
+      similar.forEach(function(s) {
+        var photo = (s.photo_urls && s.photo_urls[0]) || 'assets/images/placeholder.jpg';
+        var card = document.createElement('a');
+        card.href = 'listing.html?id=' + s.id;
+        card.className = 'listing-card';
+
+        var imgW = document.createElement('div');
+        imgW.className = 'listing-card__img';
+        var img = document.createElement('img');
+        img.src = photo;
+        img.alt = s.title || 'Property';
+        img.loading = 'lazy';
+        imgW.appendChild(img);
+
+        var body = document.createElement('div');
+        body.className = 'listing-card__body';
+        var p = document.createElement('div');
+        p.className = 'listing-card__price';
+        p.textContent = formatEC(s.price_ec);
+        body.appendChild(p);
+        var t = document.createElement('div');
+        t.className = 'listing-card__title';
+        t.textContent = s.title || 'Untitled';
+        body.appendChild(t);
+
+        card.appendChild(imgW);
+        card.appendChild(body);
+        simGrid.appendChild(card);
+      });
+    }
+
+    /* Track view */
+    Track.event('listing_view', { listing_id: l.id, district: l.district });
+  })();
+
+  function calculateMortgage() {
+    var price = parseFloat(document.getElementById('calc-price').value) || 0;
+    var downPct = parseFloat(document.getElementById('calc-down').value) || 0;
+    var rate = parseFloat(document.getElementById('calc-rate').value) || 0;
+    var term = parseFloat(document.getElementById('calc-term').value) || 25;
+
+    var downPayment = price * (downPct / 100);
+    var loan = price - downPayment;
+    var monthlyRate = (rate / 100) / 12;
+    var months = term * 12;
+
+    var monthly = 0;
+    if (monthlyRate > 0) {
+      monthly = loan * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+    } else {
+      monthly = loan / months;
+    }
+
+    var totalPaid = monthly * months;
+    var totalInterest = totalPaid - loan;
+
+    var resultEl = document.getElementById('calc-result');
+    resultEl.style.display = '';
+    resultEl.querySelector('.calc__monthly').textContent = 'EC$' + Math.round(monthly).toLocaleString() + '/mo';
+    resultEl.querySelector('.calc__monthly-usd').textContent = '~US$' + Math.round(monthly / 2.70).toLocaleString() + '/mo';
+    var items = resultEl.querySelectorAll('.calc__item-val');
+    items[0].textContent = 'EC$' + Math.round(downPayment).toLocaleString();
+    items[1].textContent = 'EC$' + Math.round(loan).toLocaleString();
+    items[2].textContent = 'EC$' + Math.round(totalInterest).toLocaleString();
+    items[3].textContent = 'EC$' + Math.round(totalPaid).toLocaleString();
+  }
+  </script>
 </body>
 </html>

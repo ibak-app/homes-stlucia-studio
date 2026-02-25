@@ -208,8 +208,140 @@
       chip.addEventListener('click', function() {
         document.querySelectorAll('.filter-chip[data-filter]').forEach(function(c) { c.classList.remove('active'); });
         this.classList.add('active');
+        loadListings();
       });
     });
+
+    /* Select filter changes */
+    document.getElementById('filter-district').addEventListener('change', loadListings);
+    document.getElementById('filter-type').addEventListener('change', loadListings);
+    document.getElementById('filter-beds').addEventListener('change', loadListings);
+    document.getElementById('sort-select').addEventListener('change', loadListings);
+
+    var currentOffset = 0;
+    var PAGE_SIZE = 12;
+
+    async function loadListings(reset) {
+      if (reset !== false) { currentOffset = 0; }
+      var grid = document.getElementById('listings-grid');
+      var heading = document.getElementById('results-heading');
+
+      var activeChip = document.querySelector('.filter-chip[data-filter].active');
+      var filterVal = activeChip ? activeChip.dataset.filter : 'all';
+      var district = document.getElementById('filter-district').value;
+      var propType = document.getElementById('filter-type').value;
+      var beds = document.getElementById('filter-beds').value;
+      var sortBy = document.getElementById('sort-select').value;
+
+      var filters = { limit: PAGE_SIZE };
+      if (filterVal === 'sale') filters.listing_type = 'sale';
+      else if (filterVal === 'rent') filters.listing_type = 'rent';
+      else if (filterVal === 'cbi') filters.cbi_eligible = true;
+      if (district) filters.district = district;
+      if (propType) filters.type = propType;
+      if (beds) filters.min_bedrooms = parseInt(beds);
+
+      if (currentOffset === 0) {
+        grid.textContent = '';
+        var loadMsg = document.createElement('div');
+        loadMsg.className = 'text-center text-muted';
+        loadMsg.style.cssText = 'grid-column:1/-1;padding:40px';
+        loadMsg.textContent = 'Loading properties...';
+        grid.appendChild(loadMsg);
+      }
+
+      var result = await Listings.getAll(filters);
+      var listings = result.data || [];
+
+      /* Sort client-side */
+      if (sortBy === 'price-low') listings.sort(function(a,b){ return (a.price_ec||0)-(b.price_ec||0); });
+      else if (sortBy === 'price-high') listings.sort(function(a,b){ return (b.price_ec||0)-(a.price_ec||0); });
+      else if (sortBy === 'beds') listings.sort(function(a,b){ return (b.bedrooms||0)-(a.bedrooms||0); });
+
+      if (currentOffset === 0) grid.textContent = '';
+
+      if (listings.length === 0 && currentOffset === 0) {
+        var emptyMsg = document.createElement('div');
+        emptyMsg.className = 'text-center text-muted';
+        emptyMsg.style.cssText = 'grid-column:1/-1;padding:60px';
+        var emptyH = document.createElement('h3');
+        emptyH.textContent = 'No properties found';
+        var emptyP = document.createElement('p');
+        emptyP.textContent = 'Try adjusting your filters';
+        emptyMsg.appendChild(emptyH);
+        emptyMsg.appendChild(emptyP);
+        grid.appendChild(emptyMsg);
+        heading.textContent = 'No Properties';
+        document.getElementById('load-more-wrap').style.display = 'none';
+        return;
+      }
+
+      heading.textContent = (filterVal === 'all' ? 'All' : listings.length + '+') + ' Properties';
+
+      listings.forEach(function(l) {
+        var photo = (l.photo_urls && l.photo_urls[0]) || 'assets/images/placeholder.jpg';
+        var card = document.createElement('a');
+        card.href = 'listing.html?id=' + l.id;
+        card.className = 'listing-card';
+
+        var imgWrap = document.createElement('div');
+        imgWrap.className = 'listing-card__img';
+        var img = document.createElement('img');
+        img.src = photo;
+        img.alt = l.title || 'Property';
+        img.loading = 'lazy';
+        imgWrap.appendChild(img);
+
+        var body = document.createElement('div');
+        body.className = 'listing-card__body';
+
+        var price = document.createElement('div');
+        price.className = 'listing-card__price';
+        price.textContent = formatEC(l.price_ec);
+        body.appendChild(price);
+
+        var title = document.createElement('div');
+        title.className = 'listing-card__title';
+        title.textContent = l.title || 'Untitled';
+        body.appendChild(title);
+
+        var meta = document.createElement('div');
+        meta.className = 'listing-card__meta';
+        meta.textContent = (l.district || '') + (l.area ? ', ' + l.area : '');
+        body.appendChild(meta);
+
+        var specs = document.createElement('div');
+        specs.className = 'listing-card__specs';
+        var specParts = [];
+        if (l.bedrooms) specParts.push(l.bedrooms + ' bd');
+        if (l.bathrooms) specParts.push(l.bathrooms + ' ba');
+        if (l.sqft) specParts.push(Number(l.sqft).toLocaleString() + ' sqft');
+        specs.textContent = specParts.join(' \u00B7 ');
+        body.appendChild(specs);
+
+        if (l.cbi_eligible) {
+          var badge = document.createElement('span');
+          badge.className = 'badge badge--accent';
+          badge.style.marginTop = '6px';
+          badge.textContent = 'CBI Eligible';
+          body.appendChild(badge);
+        }
+
+        card.appendChild(imgWrap);
+        card.appendChild(body);
+        grid.appendChild(card);
+      });
+
+      document.getElementById('load-more-wrap').style.display = listings.length < PAGE_SIZE ? 'none' : '';
+    }
+
+    document.getElementById('load-more-btn').addEventListener('click', function() {
+      currentOffset += PAGE_SIZE;
+      loadListings(false);
+    });
+
+    /* Initial load */
+    loadListings();
   })();
   </script>
 </body>

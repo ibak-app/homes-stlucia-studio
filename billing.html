@@ -215,10 +215,41 @@
   }
 
   document.querySelectorAll('[data-plan]').forEach(function(btn) {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', async function() {
       var plan = this.dataset.plan;
-      if (window.showToast) showToast('Redirecting to checkout for ' + plan + ' plan...', 'success');
-      /* Stripe checkout: window.location.href = '/api/checkout?plan=' + plan; */
+      this.disabled = true;
+      this.textContent = 'Redirecting...';
+
+      try {
+        var session = await Auth.getSession();
+        if (!session) { window.location.href = 'login.html'; return; }
+
+        var res = await fetch(SUPABASE_URL + '/functions/v1/create-homes-agent-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + session.access_token
+          },
+          body: JSON.stringify({
+            tier: plan,
+            billing: 'monthly',
+            return_url: window.location.href
+          })
+        });
+        var data = await res.json();
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          if (window.showToast) showToast('Checkout error: ' + (data.error || 'Unknown error'), 'error');
+          this.disabled = false;
+          this.textContent = 'Upgrade to ' + plan.charAt(0).toUpperCase() + plan.slice(1);
+        }
+      } catch (err) {
+        if (window.showToast) showToast('Network error. Please try again.', 'error');
+        this.disabled = false;
+        this.textContent = 'Upgrade to ' + plan.charAt(0).toUpperCase() + plan.slice(1);
+      }
     });
   });
 
